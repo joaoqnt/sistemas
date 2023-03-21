@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "155120713163",
+    "project_id": "microsistema-app-ebc4f",
+    "storage_bucket": "microsistema-app-ebc4f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155120713163:android:1ae8bb7e9b104b281b4a4e",
+        "android_client_info": {
+          "package_name": "br.com.microsistema.microsistema"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155120713163-cmh9o1jti2cjpend4csncot7v3aajf17.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwOzcZ0PQ18r_iVYexCd2RaqGq6dBhfxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155120713163-cmh9o1jti2cjpend4csncot7v3aajf17.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
