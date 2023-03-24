@@ -1,7 +1,7 @@
 //import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:microsistema/views/avaliacao_page_view.dart';
-//import 'package:microsistema/views/produto_page.dart';
+import 'package:microsistema/views/os_page_view.dart';
 
 
 // Future<void> main () async{
@@ -25,13 +25,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int telaSelecionada = 0;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: "Armadilhas",
-        home: AvaliacaoPageView()
+        title: "Ordens de Serviço",
+        home: OsPage()
     );
   }
 }

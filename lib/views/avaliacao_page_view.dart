@@ -3,26 +3,27 @@ import 'package:microsistema/controller/armadilha_controller.dart';
 import 'package:microsistema/controller/departamento_controller.dart';
 import 'package:microsistema/models/armadilhas.dart';
 import 'package:microsistema/models/departamentos.dart';
+import 'package:microsistema/models/ordemServico.dart';
 
 
 class AvaliacaoPageView extends StatefulWidget {
-  const AvaliacaoPageView({Key? key}) : super(key: key);
+  OrdemServico ordemSelected ;
+
+  AvaliacaoPageView(this.ordemSelected,{Key? key}) : super(key: key);
 
   @override
   State<AvaliacaoPageView> createState() => _AvaliacaoPageViewState();
 }
 
 class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
-  Departamento? departamentoSelected ;
-  List<Departamento> departamentos = [];
   DepartamentoController departamentoController = DepartamentoController();
-  Armadilha? armadilhaSelected;
   ArmadilhaController armadilhaController = ArmadilhaController();
 
   @override
   void initState(){
     super.initState();
-    departamentos = this.departamentoController.listAll();
+    this.departamentoController.listAll();
+    departamentoController.filterByOs(widget.ordemSelected.codigo!);
   }
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,6 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
         actions: [
           InkWell(
             onTap: () {
-              print(departamentoSelected);
               // AlertWidgets alert = AlertWidgets();
               // alert.Dialogo(context, "Salvar ${departamentoSelected!.nome} ?");
             },
@@ -44,26 +44,30 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
       body: Column(
         children: [
           DropdownButton(
-              value: departamentoSelected,
-              items: departamentos.map((e) {
+              value: departamentoController.departamentoSelected,
+              items: departamentoController.departamentos.map((e) {
                 return DropdownMenuItem(
                     value: e,
-                    child: Text('${e.nome}')
+                    child: Text('${e.nome}'),
                 );
               }).toList(),
               onChanged: (value){
                 setState(() {
-                  departamentoSelected = value;
+                  departamentoController.departamentoSelected = value;
+                  // print(departamentoController.departamentoSelected!.codigo);
+                  armadilhaController.filter(
+                      departamentoController.departamentoSelected!.codigo!,
+                      departamentoController.departamentoSelected!.os!);
                   listWidget();
+                  print(armadilhaController.armadilhas.length);
+                  print(departamentoController.departamentoSelected!.os!);
                 });
               }),
           Expanded(
-            child: departamentoSelected == null ? Container() :
+            child: departamentoController.departamentoSelected == null ? Container() :
               ListView.builder(
-                itemCount: departamentoSelected?.armadilhas!.length,
+                itemCount: armadilhaController.armadilhas.length,
                 itemBuilder: (context, index) {
-                  Armadilha armadilha = departamentoSelected!.armadilhas![index];
-
                   return Card(
                     child: Container(
                       padding: EdgeInsets.all(10),
@@ -82,11 +86,11 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                       child: Row(
                         children: [
                           Expanded(
-                              child: Text("${armadilha.nome}")
+                              child: Text("${armadilhaController.armadilhas[index].nome}")
                           ),
                           DropdownButton(
                               //key: ,
-                              value: armadilha.status, //mapStatus[index],
+                              value: armadilhaController.armadilhas[index].status, //mapStatus[index],
                               items: armadilhaController.listStatus.map((e) {
                                 return DropdownMenuItem(
                                     value: e,
@@ -95,9 +99,11 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                               }).toList(),
                               onChanged: (value){
                                 setState(() {
-                                  armadilha.status = value.toString();
+                                  armadilhaController.armadilhas[index].status = value.toString();
                                   armadilhaController.mapStatus[index] = value.toString();
-                                  // departamentoSelected = departamentoController.updateArmadilhaPorDepartamento(value.toString(), departamentoSelected!.codigo!, armadilha.codigo!);
+                                  armadilhaController.armadilhaSelected = armadilhaController.armadilhas[index];
+                                  print(armadilhaController.armadilhas[index]);
+                                  print(armadilhaController.armadilhaSelected);
                                 });
                               }),
                         ],
@@ -127,7 +133,13 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
 
     armadilhaController.listStatus.forEach((element) {
       l.add(Text(
-          '$element:${departamentoController.contaArmadilha(status: element, departamento: departamentoSelected)}',
+          '$element:'
+              '${armadilhaController.contaArmadilha(
+              status: element,
+              // departamento: armadilhaController.armadilhaSelected!.departamento,
+              // os: armadilhaController.armadilhaSelected!.os
+          )
+          }',
           style: TextStyle(color: Colors.white))
       );
     });

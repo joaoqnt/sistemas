@@ -6,32 +6,31 @@ class ArmadilhaController{
   ArmadilhaRepository repository = ArmadilhaRepository();
   List<String> listStatus = ['A', 'B', 'C', 'D', 'K','P','R','X'];
   Map<int,String> mapStatus = {};
-  Map<int,String> mapStatusCom = {};
-  Map<int,String> mapStatusAdm = {};
+  Armadilha? armadilhaSelected;
+  List<Armadilha> armadilhas = [];
 
-  List<Armadilha> listAllByDepartamento({int? departamento}){
-    return repository.listAllByDepartamento(departamento: departamento);
+  List<Armadilha> listAllByDepartamento(int departamento){
+    armadilhas = repository.listAllByDepartamento(departamento);
+    return armadilhas;
   }
 
+  void filter(int departamento, int os){
+    List<Armadilha> list = listAllByDepartamento(departamento);
+    armadilhas = [];
 
+    list.forEach((element) {
+      if(element.departamento == departamento && element.os == os){
+        armadilhas.add(element);
+       }
+      // print( list.where((element) => element.os == os).length);
+    });
+  }
 
-
-  // int CountByDepartamento(String? status, Map<int,String>? mapStatus, int? departamento){
-  //   if(departamento != null){
-  //     return repository.CountByDepartamento(status, mapStatus,departamento);
-  //
-  //   } else
-  //   if(departamento == 1){
-  //     mapStatus = mapStatusCom;
-  //     // return repository.CountByDepartamento(status, mapStatus, Departamento);
-  //   } else {
-  //     mapStatus = mapStatusAdm;
-  //   }
-  //     return 0;
-  // }
-
-
-
-
+  int contaArmadilha({String? status}){
+      return (armadilhas??[]).where(
+              (element) => element.status == status
+                  && element.departamento == armadilhaSelected?.departamento
+                  && element.os == armadilhaSelected?.os).length;
+  }
 
 }

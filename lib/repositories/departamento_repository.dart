@@ -1,7 +1,15 @@
+import 'package:dio/dio.dart';
 import 'package:microsistema/models/departamentos.dart';
 import 'package:microsistema/repositories/armadilha_repository.dart';
 
 class DepartamentoRepository{
+
+  final dio = Dio();
+
+  void getHttp() async {
+    final response = await dio.get('https://dart.dev');
+    print(response);
+  }
 
   List<Departamento> departamentos =  [
 
@@ -9,37 +17,23 @@ class DepartamentoRepository{
         {
           "codigo": 1,
           "nome": "Comercial",
-          "armadilhas":[
-            {
-              "codigo":1,
-              "nome": "Armadilha 1"
-            },
-            {
-              "codigo":2,
-              "nome": "Armadilha 2"
-            }
-          ]
+          "os":158130
         }
     ),
 
     Departamento.fromJson(
         {
           "codigo": 2,
+          "nome": "Administração",
+          "os":158130
+        }
+    ),
+
+    Departamento.fromJson(
+        {
+          "codigo": 1,
           "nome": "Administrativo",
-          "armadilhas":[
-            {
-              "codigo":1,
-              "nome": "Armadilha 1"
-            },
-            {
-              "codigo":2,
-              "nome": "Armadilha 2"
-            },
-            {
-              "codigo":3,
-              "nome": "Armadilha 3"
-            }
-          ]
+          "os":158131
         }
     ),
 

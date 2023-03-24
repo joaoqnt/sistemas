@@ -6,12 +6,24 @@ class DepartamentoController{
 
   DepartamentoRepository repository = DepartamentoRepository();
   Map<int,String> mapStatus = {};
-
-  //List<Departamento> departamentos ;
+  Departamento? departamentoSelected ;
+  List<Departamento> departamentos = [] ;
 
 
   List<Departamento> listAll(){
-    return repository.listAll();
+    departamentos = repository.listAll();
+    return departamentos;
+  }
+
+  void filterByOs(int os){
+    List<Departamento> list = listAll();
+    departamentos = [];
+
+    list.forEach((element) {
+      if(element.os == os)
+        departamentos.add(element);
+    });
+    // print( list.where((element) => element.os == os).length);
   }
 
   void save(Departamento departamento){
@@ -19,13 +31,14 @@ class DepartamentoController{
       repository.save(departamento);
   }
 
-  int contaArmadilha({String? status, Departamento? departamento}){
-    if(departamento == null)
-      return 0;
-    else
-      return (departamento.armadilhas??[]).where((element) => element.status == status).length;
-  }
-
-
+  // int contaArmadilha({String? status, Departamento? departamento}){
+  //   if(departamento == null)
+  //     return 0;
+  //   else {
+  //     return (
+  //         departamento.armadilhas??[]).where(
+  //             (element) => element.status == status).length;
+  //   }
+  // }
 
 }
