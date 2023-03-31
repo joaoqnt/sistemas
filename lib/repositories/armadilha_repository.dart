@@ -1,70 +1,30 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:microsistema/models/armadilhas.dart';
 
 class ArmadilhaRepository{
 
-  List<Armadilha> armadilhas = [
-    Armadilha.fromJson(
-        {
-          "codigo":1,
-          "nome": "Armadilha 1",
-          "departamento":1,
-          "os":158130
-        },
-    ),
-    Armadilha.fromJson(
-      {
-        "codigo":2,
-        "nome": "Armadilha 2",
-        "departamento":1,
-        "os":158130
-      },
-    ),
-    Armadilha.fromJson(
-      {
-        "codigo":1,
-        "nome": "Armadilha 1",
-        "departamento":2,
-        "os":158130
-      },
-    ),
-    Armadilha.fromJson(
-      {
-        "codigo":2,
-        "nome": "Armadilha 2",
-        "departamento":2,
-        "os":158130
-      },
-    ),
-    Armadilha.fromJson(
-      {
-        "codigo":3,
-        "nome": "Armadilha 3",
-        "departamento":2,
-        "os":158130
-      },
-    ),
-    Armadilha.fromJson(
-      {
-        "codigo":4,
-        "nome": "Armadilha 4",
-        "departamento":2,
-        "os":158130
-      },
-    ),
-    Armadilha.fromJson(
-      {
-        "codigo":1,
-        "nome": "Armadilha 1",
-        "departamento":1,
-        "os":158131
-      },
-    ),
-  ];
-
-
-  List<Armadilha> listAllByDepartamento(int? departamento){
+  Future<List<Armadilha>> getArmadilhas(int? os) async {
+    var http = Dio();
+    List<Armadilha> armadilhas = [];
+    Response response = await http.get(
+        'https://compraonline.app/api/v5/eco_grupoproduto/grupo_produto/armadilhas?os=${os}',
+        options: Options(headers:{
+          'tenant': 'arcuseco_03683003000165'
+        })
+    );
+    if(response.statusCode == 200){
+      // final json = jsonEncode(response);
+      // print(response.data);
+      response.data["resultSelects"]['grupo_produto'].forEach((element){
+        armadilhas.add(Armadilha.fromJson(element));
+      });
+    }
     return armadilhas;
   }
+
+
 
   int CountByDepartamento(String? status, Map<int, String>? mapStatus,int? departamento){
     int contador = 0;
@@ -75,5 +35,23 @@ class ArmadilhaRepository{
       }
     });
     return contador;
+  }
+
+  Future updateArmadilha(Armadilha armadilha) async{
+    String armadilhaEncoded = jsonEncode({"1" : [armadilha.toJson()]});
+    var http = Dio();
+    var response;
+    try{
+      response = await http.post(
+          'https://compraonline.app/api/v5/json/eco_grupoproduto/grupo_produto/atualiza_status',
+          options: Options(headers:{
+            'tenant': 'arcuseco_03683003000165',
+            HttpHeaders.contentTypeHeader: "application/json",
+          }),
+          data: armadilhaEncoded
+      );
+    }catch (error){
+      print('erro $error');
+    }
   }
 }

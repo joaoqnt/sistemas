@@ -1,48 +1,29 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:microsistema/models/departamentos.dart';
-import 'package:microsistema/repositories/armadilha_repository.dart';
 
 class DepartamentoRepository{
 
-  final dio = Dio();
-
-  void getHttp() async {
-    final response = await dio.get('https://dart.dev');
-    print(response);
+  Future<List<Departamento>> getHttp(int? os) async {
+    var http = Dio();
+    List<Departamento> departamentos = [];
+    Response response = await http.get(
+        'https://compraonline.app/api/v5/eco_grupoproduto/grupo_produto/departamentos?os=${os}',
+        options: Options(headers:{
+          'tenant': 'arcuseco_03683003000165'
+        })
+    );
+    if(response.statusCode == 200){
+      // final json = jsonEncode(response);
+      response.data["resultSelects"]['grupo_produto'].forEach((element){
+        departamentos.add(Departamento.fromJson(element));
+      });
+    }
+    return departamentos;
   }
 
-  List<Departamento> departamentos =  [
 
-    Departamento.fromJson(
-        {
-          "codigo": 1,
-          "nome": "Comercial",
-          "os":158130
-        }
-    ),
-
-    Departamento.fromJson(
-        {
-          "codigo": 2,
-          "nome": "Administração",
-          "os":158130
-        }
-    ),
-
-    Departamento.fromJson(
-        {
-          "codigo": 1,
-          "nome": "Administrativo",
-          "os":158131
-        }
-    ),
-
-
-  ];
-
-  List<Departamento> listAll(){
-    return this.departamentos;
-  }
 
   void save(Departamento departamento) {
   }

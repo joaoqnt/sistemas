@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:microsistema/controller/ordemServico_controller.dart';
 import 'package:microsistema/models/ordemServico.dart';
+import 'package:microsistema/utils/dataformato_util.dart';
 import 'package:microsistema/views/avaliacao_page_view.dart';
 
+//banco de dados sqlite
 class OsPage extends StatefulWidget {
   const OsPage({Key? key}) : super(key: key);
 
@@ -17,19 +19,33 @@ class _OsPageState extends State<OsPage> {
   TextEditingController? tecBusca;
 
   @override
-  void initState(){
+  void initState() {
+    init();
     super.initState();
-    ordemServicos = ordemServicoController.listAll();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Ordem de Serviço"),
-        centerTitle: true
-      ),
+          title: Text("Ordem de Serviço"),
+          actions: [
+            InkWell(
+              child: Icon(Icons.refresh),
+              onTap: () async {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Center(child: CircularProgressIndicator());
+                    });
+                await init();
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+          centerTitle: true),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -38,16 +54,15 @@ class _OsPageState extends State<OsPage> {
                 Expanded(
                   child: TextField(
                     controller: tecBusca,
-                    keyboardType: TextInputType.number,
+                    //keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       labelText: "Pesquise",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)
-                      )
                     ),
                     onChanged: (value) {
-
+                      setState(() {
+                        ordemServicoController.filterOs(value);
+                      });
                     },
                   ),
                 )
@@ -56,76 +71,166 @@ class _OsPageState extends State<OsPage> {
           ),
           Expanded(
               child: ListView.builder(
-                  itemCount: ordemServicos.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: InkWell(
-                        onTap: () {
-                          ordemSelected = ordemServicos[index];
-                          // print(ordemSelected);
-                          // print(DateTime.now());
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (BuildContext)=>AvaliacaoPageView(ordemSelected!))
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(3),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  //spreadRadius: 5,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 1)
-                              ),
-                            ],
-                          ),
-                          child: Row(
+            itemCount: ordemServicoController.filteredOrdemservicos.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: InkWell(
+                  onTap: () {
+                    ordemSelected =
+                        ordemServicoController.filteredOrdemservicos[index];
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext) =>
+                                AvaliacaoPageView(ordemSelected!)));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(3),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            //spreadRadius: 5,
+                            blurRadius: 10,
+                            offset: Offset(0, 1)),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Text(
+                                "${ordemServicoController.filteredOrdemservicos[index].id}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 7.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.person,
+                                      size: 12,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Text(
+                                          "${ordemServicoController.filteredOrdemservicos[index].nomeCli}",
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.grey)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Row(
                                 children: [
-                                  Text(
-                                      "${ordemServicos[index].codigo}",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14),
-                                  ),
+                                  Icon(Icons.calendar_month,
+                                      size: 12, color: Colors.grey),
                                   Padding(
-                                    padding: const EdgeInsets.only(top:10.0,),
+                                    padding: const EdgeInsets.only(left: 8.0),
                                     child: Text(
-                                        "${ordemServicos[index].nomeCli}",style: TextStyle(fontSize: 16)),
+                                      "${DataFormato.getDate(ordemServicoController.filteredOrdemservicos[index].data, DataFormato.formatDDMMYYYY)}",
+                                      style: const TextStyle(
+                                          fontSize: 15, color: Colors.grey),
+                                    ),
                                   )
                                 ],
                               )
-                              // Padding(
-                              //   padding: const EdgeInsets.only(right: 30.0),
-                              //   child: Text(
-                              //       "${ordemServicos[index].codigo}",
-                              //   ),
-                              // ),
-                              // Expanded(
-                              //     child: Text("${ordemServicos[index].nomeCli}")
-                              // ),
-                              // Column(
-                              //   children: [
-                              //     Text("${ordemServicos[index].data}",style: TextStyle(fontSize: 12),),
-                              //     IconButton(onPressed: (){}, icon: Icon(Icons.expand_more))
-                              //   ],
-                              // )
                             ],
                           ),
                         ),
-                      ),
-                    );
-                  },
-              )
-          )
+                        Column(
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            title: Text("Ordem de Serviço"),
+                                            actions: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    TextFormField(
+                                                      decoration:
+                                                      const InputDecoration(
+                                                          labelText:
+                                                          "Pontos de Melhoria"),
+                                                      enabled: false,
+                                                      initialValue:
+                                                      "${ordemServicoController.filteredOrdemservicos[index].pontosMelhorias}",
+                                                    ),
+                                                    TextFormField(
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  "Relatório"),
+                                                      enabled: false,
+                                                      initialValue:
+                                                          "${ordemServicoController.filteredOrdemservicos[index].relMonitor}",
+                                                    ),
+                                                    TextFormField(
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  "Observação"),
+                                                      enabled: false,
+                                                      initialValue:
+                                                          "${ordemServicoController.filteredOrdemservicos[index].observacoes}",
+                                                    ),
+                                                    TextFormField(
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  "Comentários"),
+                                                      enabled: false,
+                                                      initialValue:
+                                                          "${ordemServicoController.filteredOrdemservicos[index].comentarios}",
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ));
+                                },
+                                icon: const Icon(
+                                  Icons.info_outline,
+                                  size: 18,
+                                )),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          )),
+          Padding(
+              padding: const EdgeInsets.all(14.0),
+              child: FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    ordemServicoController.order();
+                  });
+                },
+                child: Icon(Icons.swap_vert_outlined),
+              ))
         ],
       ),
     );
+  }
+
+  Future init() async {
+    await ordemServicoController.getOs();
+    setState(() {});
   }
 }

@@ -3,13 +3,32 @@ import 'package:microsistema/repositories/ordemServico_repository.dart';
 
 class OrdemServicoController{
   OrdemServicoRepository repository = OrdemServicoRepository();
+  List<OrdemServico> filteredOrdemservicos = [];
+  List<OrdemServico> ordemservicos = [];
+  bool isOrdered = false;
 
-  List<OrdemServico> listAll(){
-    return repository.listAll();
+  Future getOs() async{
+    ordemservicos =  await repository.getOs();
+    filteredOrdemservicos = ordemservicos;
   }
 
   void save(OrdemServico ordemServico){
     repository.save(ordemServico);
   }
+  void filterOs(String? busca){
+    filteredOrdemservicos = ordemservicos.where((element) =>
+        element.id.toString().contains(busca.toString()) ||
+            element.nomeCli!.toLowerCase().contains(busca!.toLowerCase())).toList();
+  }
 
+  void order(){
+    if(!isOrdered){
+      ordemservicos.sort((OrdemServico b, OrdemServico a)=> a.id!.compareTo(b.id!));
+      isOrdered = true;
+    }
+    else{
+      ordemservicos.sort((OrdemServico a, OrdemServico b)=> a.id!.compareTo(b.id!));
+      isOrdered = false;
+    }
+  }
 }
