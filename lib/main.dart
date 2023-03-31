@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: "Ordens de Serviço",
-        home: OsPage(),
+        home: OsPageView(),
         debugShowCheckedModeBanner: false,
     );
   }

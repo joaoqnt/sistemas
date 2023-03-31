@@ -5,14 +5,14 @@ import 'package:microsistema/utils/dataformato_util.dart';
 import 'package:microsistema/views/avaliacao_page_view.dart';
 
 //banco de dados sqlite
-class OsPage extends StatefulWidget {
-  const OsPage({Key? key}) : super(key: key);
+class OsPageView extends StatefulWidget {
+  const OsPageView({Key? key}) : super(key: key);
 
   @override
-  State<OsPage> createState() => _OsPageState();
+  State<OsPageView> createState() => _OsPageViewState();
 }
 
-class _OsPageState extends State<OsPage> {
+class _OsPageViewState extends State<OsPageView> {
   List<OrdemServico> ordemServicos = [];
   OrdemServicoController ordemServicoController = OrdemServicoController();
   OrdemServico? ordemSelected;
