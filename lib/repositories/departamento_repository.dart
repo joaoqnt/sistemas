@@ -5,11 +5,11 @@ import 'package:microsistema/models/departamentos.dart';
 
 class DepartamentoRepository{
 
-  Future<List<Departamento>> getHttp(int? os) async {
+  Future<List<Departamento>> getHttp() async {
     var http = Dio();
     List<Departamento> departamentos = [];
     Response response = await http.get(
-        'https://compraonline.app/api/v5/eco_grupoproduto/grupo_produto/departamentos?os=${os}',
+        'https://compraonline.app/api/v5/eco_grupoproduto/grupo_produto/departamentos}',
         options: Options(headers:{
           'tenant': 'arcuseco_03683003000165'
         })
@@ -25,6 +25,6 @@ class DepartamentoRepository{
 
 
 
-  void save(Departamento departamento) {
+  void save(List<Departamento> departamentos) {
   }
 }

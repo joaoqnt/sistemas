@@ -41,18 +41,20 @@ class DatabaseRepository {
 
     await db.execute('''
       CREATE TABLE "DEPARTAMENTOS" (
-        ID    INT primary key,
-        OS    INT primary key,
-        NOME  text);'''
+        ID    INT,
+        OS    INT,
+        NOME  text,
+        PRIMARY KEY (ID, OS));'''
     );
     
     await db.execute('''
       CREATE TABLE ARMADILHAS (
-        ID            INT primary key,
-        DEPARTAMENTO  INT primary key,
-        OS            INT primary key,
+        ID            INT,
+        DEPARTAMENTO  INT,
+        OS            INT,
         NOME          text,
-        STATUS        text);'''
+        STATUS        text,
+        PRIMARY KEY (ID, DEPARTAMENTO,OS));'''
     );
     print(" onCreate =====================================");
   }

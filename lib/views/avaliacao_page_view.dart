@@ -188,8 +188,8 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
   }
 
   Future init() async{
-    await departamentoController.getDepartamentos(widget.ordemSelected.id);
-    await armadilhaController.getArmadilhas(widget.ordemSelected.id);
+    // await departamentoController.getDepartamentos(widget.ordemSelected.id);
+    // await armadilhaController.getArmadilhas(widget.ordemSelected.id);
     setState(() {
     });
   }

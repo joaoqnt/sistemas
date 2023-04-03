@@ -1,21 +1,35 @@
 import 'package:microsistema/models/departamentos.dart';
+import 'package:microsistema/repositories/database_repository.dart';
 import 'package:microsistema/repositories/departamento_repository.dart';
 
-class DepartamentoController{
-
+class DepartamentoController {
   DepartamentoRepository repository = DepartamentoRepository();
-  Map<int,String> mapStatus = {};
-  Departamento? departamentoSelected ;
-  List<Departamento> departamentos = [] ;
+  DatabaseRepository databaseRepository = DatabaseRepository();
+  Map<int, String> mapStatus = {};
+  Departamento? departamentoSelected;
 
+  List<Departamento> departamentos = [];
 
-  Future getDepartamentos(int? os) async{
-    departamentos = await repository.getHttp(os);
+  bool sincronizado = false;
+
+  Future getDepartamentos({bool? sincronizado}) async {
+    if (sincronizado!) {
+      departamentos = await repository.getHttp();
+      databaseRepository.deleteData("delete from 'departamentos'");
+      save(departamentos);
+    } else {
+      List<dynamic> lista = [];
+      lista = await databaseRepository.selectData("select * from 'departamentos';");
+      lista.forEach((element) {
+        departamentos.add(Departamento.fromJson(element));
+      });
+    }
   }
 
-  void save(Departamento departamento){
-    if(departamento.nome!.isNotEmpty)
-      repository.save(departamento);
+  void save(List<Departamento> departamentos) {
+    departamentos.forEach((element) async{
+      await databaseRepository.insertData("insert into 'departamentos'(id,nome,os) values (${element.toString()});");
+    });
+    repository.save(departamentos);
   }
-
 }

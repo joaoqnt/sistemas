@@ -44,7 +44,6 @@ class OrdemServico {
 
   @override
   String toString() {
-    return 'OrdemServico{'
-        'id: $id, idCli: $idCli, nomeCli: $nomeCli, data: $data, pontosMelhorias: $pontosMelhorias, relMonitor: $relMonitor, observacoes: $observacoes, comentarios: $comentarios}';
+    return '$id,$idCli,"${nomeCli}","${data}","${pontosMelhorias}","${relMonitor}","${observacoes}","${comentarios}"';
   }
 }

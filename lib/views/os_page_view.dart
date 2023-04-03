@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:microsistema/controller/departamento_controller.dart';
 import 'package:microsistema/controller/ordemServico_controller.dart';
+import 'package:microsistema/models/departamentos.dart';
 import 'package:microsistema/models/ordemServico.dart';
 import 'package:microsistema/repositories/database_repository.dart';
 import 'package:microsistema/utils/dataformato_util.dart';
@@ -16,11 +18,14 @@ class OsPageView extends StatefulWidget {
 class _OsPageViewState extends State<OsPageView> {
   List<OrdemServico> ordemServicos = [];
   OrdemServicoController ordemServicoController = OrdemServicoController();
+  List<Departamento> departamentos = [];
+  DepartamentoController departamentoController = DepartamentoController();
   OrdemServico? ordemSelected;
   TextEditingController? tecBusca;
 
   @override
   void initState() {
+
     init();
     super.initState();
   }
@@ -232,14 +237,10 @@ class _OsPageViewState extends State<OsPageView> {
   }
 
   Future init() async {
-    DatabaseRepository db = DatabaseRepository();
-    // ScriptDao script = ScriptDao();
-    // int response = await db.insertData(
-    //     "insert into 'ORDEM_SERVICO'(id,nome_cliente) values (3,'teste 3');");
-    // print(response);
-    // List<Map> select = await db.selectData("select * from 'ordem_servico';");
-    // print(select);
+    print(ordemServicoController.sincronizado);
     await ordemServicoController.getOs(sincronizado: ordemServicoController.sincronizado);
+    ordemServicoController.sincronizado = false;
+    print(ordemServicoController.sincronizado);
     setState(() {});
   }
 }
