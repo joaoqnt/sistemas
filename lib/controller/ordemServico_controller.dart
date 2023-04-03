@@ -6,9 +6,10 @@ class OrdemServicoController{
   List<OrdemServico> filteredOrdemservicos = [];
   List<OrdemServico> ordemservicos = [];
   bool isOrdered = false;
+  bool sincronizado = false;
 
-  Future getOs() async{
-    ordemservicos =  await repository.getOs();
+  Future getOs({bool? sincronizado}) async{
+    ordemservicos =  await repository.getOs(sincronizado: sincronizado);
     filteredOrdemservicos = ordemservicos;
   }
 

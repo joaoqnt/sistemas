@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:microsistema/controller/ordemServico_controller.dart';
 import 'package:microsistema/models/ordemServico.dart';
+import 'package:microsistema/repositories/database_repository.dart';
 import 'package:microsistema/utils/dataformato_util.dart';
 import 'package:microsistema/views/avaliacao_page_view.dart';
 
@@ -38,6 +39,7 @@ class _OsPageViewState extends State<OsPageView> {
                     builder: (context) {
                       return Center(child: CircularProgressIndicator());
                     });
+                ordemServicoController.sincronizado = true;
                 await init();
                 Navigator.of(context).pop();
               },
@@ -161,12 +163,12 @@ class _OsPageViewState extends State<OsPageView> {
                                                   children: [
                                                     TextFormField(
                                                       decoration:
-                                                      const InputDecoration(
-                                                          labelText:
-                                                          "Pontos de Melhoria"),
+                                                          const InputDecoration(
+                                                              labelText:
+                                                                  "Pontos de Melhoria"),
                                                       enabled: false,
                                                       initialValue:
-                                                      "${ordemServicoController.filteredOrdemservicos[index].pontosMelhorias}",
+                                                          "${ordemServicoController.filteredOrdemservicos[index].pontosMelhorias}",
                                                     ),
                                                     TextFormField(
                                                       decoration:
@@ -230,7 +232,14 @@ class _OsPageViewState extends State<OsPageView> {
   }
 
   Future init() async {
-    await ordemServicoController.getOs();
+    DatabaseRepository db = DatabaseRepository();
+    // ScriptDao script = ScriptDao();
+    // int response = await db.insertData(
+    //     "insert into 'ORDEM_SERVICO'(id,nome_cliente) values (3,'teste 3');");
+    // print(response);
+    // List<Map> select = await db.selectData("select * from 'ordem_servico';");
+    // print(select);
+    await ordemServicoController.getOs(sincronizado: ordemServicoController.sincronizado);
     setState(() {});
   }
 }
