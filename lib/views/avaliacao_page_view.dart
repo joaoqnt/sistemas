@@ -64,9 +64,10 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
               onChanged: (value){
                 setState(() {
                   departamentoController.departamentoSelected = value;
-                  armadilhaController.filterArmadilhaByDep(departamentoController.departamentoSelected!.id);
+                  armadilhaController.filterArmadilhaByDep(departamentoController.departamentoSelected!.id,departamentoController.departamentoSelected!.os);
                   codDep = departamentoController.departamentoSelected!.id!;
                   codOs = departamentoController.departamentoSelected!.os!;
+                  print(armadilhaController.armadilhas);
                   listWidget();
                 });
               }),
@@ -188,8 +189,8 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
   }
 
   Future init() async{
-    // await departamentoController.getDepartamentos(widget.ordemSelected.id);
-    // await armadilhaController.getArmadilhas(widget.ordemSelected.id);
+    await departamentoController.getDepartamentosbyOs(widget.ordemSelected.id);
+    await armadilhaController.getArmadilhas(sincronizado: false);
     setState(() {
     });
   }

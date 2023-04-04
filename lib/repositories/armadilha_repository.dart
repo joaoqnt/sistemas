@@ -5,11 +5,11 @@ import 'package:microsistema/models/armadilhas.dart';
 
 class ArmadilhaRepository{
 
-  Future<List<Armadilha>> getArmadilhas(int? os) async {
+  Future<List<Armadilha>> getArmadilhas() async {
     var http = Dio();
     List<Armadilha> armadilhas = [];
     Response response = await http.get(
-        'https://compraonline.app/api/v5/eco_grupoproduto/grupo_produto/armadilhas?os=${os}',
+        'https://compraonline.app/api/v5/eco_grupoproduto/grupo_produto/armadilhas',
         options: Options(headers:{
           'tenant': 'arcuseco_03683003000165'
         })

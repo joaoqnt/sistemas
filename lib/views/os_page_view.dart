@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:microsistema/controller/armadilha_controller.dart';
 import 'package:microsistema/controller/departamento_controller.dart';
 import 'package:microsistema/controller/ordemServico_controller.dart';
 import 'package:microsistema/models/departamentos.dart';
@@ -20,6 +21,7 @@ class _OsPageViewState extends State<OsPageView> {
   OrdemServicoController ordemServicoController = OrdemServicoController();
   List<Departamento> departamentos = [];
   DepartamentoController departamentoController = DepartamentoController();
+  ArmadilhaController armadilhaController = ArmadilhaController();
   OrdemServico? ordemSelected;
   TextEditingController? tecBusca;
 
@@ -239,8 +241,10 @@ class _OsPageViewState extends State<OsPageView> {
   Future init() async {
     print(ordemServicoController.sincronizado);
     await ordemServicoController.getOs(sincronizado: ordemServicoController.sincronizado);
+    await departamentoController.getDepartamentos(sincronizado: ordemServicoController.sincronizado);
+    await armadilhaController.getArmadilhas(sincronizado: ordemServicoController.sincronizado);
     ordemServicoController.sincronizado = false;
-    print(ordemServicoController.sincronizado);
+    print(armadilhaController.armadilhas);
     setState(() {});
   }
 }

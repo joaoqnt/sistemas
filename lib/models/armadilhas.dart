@@ -27,7 +27,7 @@ class Armadilha {
  @override
   String toString() {
     // TODO: implement toString
-    return "id : $id , nome : $nome, departamento : $departamento, status : $status, os : $os";
+    return '$id ,"${nome}",$departamento,"${status}",$os';
   }
 
 }

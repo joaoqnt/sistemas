@@ -14,7 +14,7 @@ class DepartamentoController {
 
   Future getDepartamentos({bool? sincronizado}) async {
     if (sincronizado!) {
-      departamentos = await repository.getHttp();
+      departamentos = await repository.getDepartamentos();
       databaseRepository.deleteData("delete from 'departamentos'");
       save(departamentos);
     } else {
@@ -24,6 +24,14 @@ class DepartamentoController {
         departamentos.add(Departamento.fromJson(element));
       });
     }
+  }
+
+  Future getDepartamentosbyOs(int? os) async {
+    List<dynamic> lista = [];
+    lista = await databaseRepository.selectData("select * from 'departamentos' where os = ${os}");
+    lista.forEach((element) {
+      departamentos.add(Departamento.fromJson(element));
+    });
   }
 
   void save(List<Departamento> departamentos) {
