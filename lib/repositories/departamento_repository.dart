@@ -1,29 +1,22 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
+import 'package:microsistema/infra/database_infra.dart';
 import 'package:microsistema/models/departamentos.dart';
+import 'package:microsistema/repositories/armadilha_repository.dart';
 
 class DepartamentoRepository{
+  DatabaseInfra database = DatabaseInfra();
 
-  Future<List<Departamento>> getDepartamentos() async {
-    var http = Dio();
-    List<Departamento> departamentos = [];
-    Response response = await http.get(
-        'https://compraonline.app/api/v5/eco_grupoproduto/grupo_produto/departamentos',
-        options: Options(headers:{
-          'tenant': 'arcuseco_03683003000165'
-        })
-    );
-    if(response.statusCode == 200){
-      // final json = jsonEncode(response);
-      response.data["resultSelects"]['grupo_produto'].forEach((element){
-        departamentos.add(Departamento.fromJson(element));
-      });
-    }
-    return departamentos;
+  Future<List<Departamento>> getAllDep(int os) async{
+    ArmadilhaRepository armadilhaRepository = ArmadilhaRepository();
+    List<dynamic> lista = [];
+    List<Departamento> listDep = [];
+    lista = await database.selectData("select * from 'DEPARTAMENTOS' where os = ${os}");
+    lista.forEach((element) async{
+      Departamento departamento = Departamento.fromJson(element);
+      listDep.add(departamento);
+      departamento.armadilhas = await armadilhaRepository.getAllArm(os, departamento.id!);
+    });
+    return listDep;
   }
-
-
 
   void save(List<Departamento> departamentos) {
   }

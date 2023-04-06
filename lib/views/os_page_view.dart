@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:microsistema/controller/armadilha_controller.dart';
-import 'package:microsistema/controller/departamento_controller.dart';
 import 'package:microsistema/controller/ordemServico_controller.dart';
-import 'package:microsistema/models/departamentos.dart';
-import 'package:microsistema/models/ordemServico.dart';
-import 'package:microsistema/repositories/database_repository.dart';
 import 'package:microsistema/utils/dataformato_util.dart';
 import 'package:microsistema/views/avaliacao_page_view.dart';
 
@@ -17,42 +12,36 @@ class OsPageView extends StatefulWidget {
 }
 
 class _OsPageViewState extends State<OsPageView> {
-  List<OrdemServico> ordemServicos = [];
   OrdemServicoController ordemServicoController = OrdemServicoController();
-  List<Departamento> departamentos = [];
-  DepartamentoController departamentoController = DepartamentoController();
-  ArmadilhaController armadilhaController = ArmadilhaController();
-  OrdemServico? ordemSelected;
-  TextEditingController? tecBusca;
 
   @override
   void initState() {
-
-    init();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController tecBusca = TextEditingController();
     return Scaffold(
       appBar: AppBar(
-          title: Text("Ordem de Serviço"),
-          actions: [
-            InkWell(
-              child: Icon(Icons.refresh),
-              onTap: () async {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Center(child: CircularProgressIndicator());
-                    });
-                ordemServicoController.sincronizado = true;
-                await init();
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-          centerTitle: true),
+        title: Text("Ordem de Serviço"),
+        centerTitle: true,
+        actions: [
+          InkWell(
+            child: Icon(Icons.refresh),
+            onTap: () async {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Center(child: CircularProgressIndicator());
+                  });
+              await init();
+              Navigator.of(context).pop();
+              print(ordemServicoController.ordemservicos);
+            },
+          )
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -64,13 +53,13 @@ class _OsPageViewState extends State<OsPageView> {
                   child: TextField(
                     controller: tecBusca,
                     //keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       labelText: "Pesquise",
                     ),
                     onChanged: (value) {
                       setState(() {
-                        ordemServicoController.filterOs(value);
+                        // ordemServicoController.filterOs(value);
                       });
                     },
                   ),
@@ -80,171 +69,108 @@ class _OsPageViewState extends State<OsPageView> {
           ),
           Expanded(
               child: ListView.builder(
-            itemCount: ordemServicoController.filteredOrdemservicos.length,
-            itemBuilder: (context, index) {
-              return Card(
-                child: InkWell(
-                  onTap: () {
-                    ordemSelected =
-                        ordemServicoController.filteredOrdemservicos[index];
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext) =>
-                                AvaliacaoPageView(ordemSelected!)));
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(3),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            //spreadRadius: 5,
-                            blurRadius: 10,
-                            offset: Offset(0, 1)),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  itemCount: ordemServicoController.ordemservicos.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: InkWell(
+                        onTap: () {
+                          ordemServicoController.ordemServicoSellected = ordemServicoController.ordemservicos[index];
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (BuildContext) =>
+                                  AvaliacaoPageView(ordemServicoController.ordemServicoSellected!)
+                              )
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(3),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  //spreadRadius: 5,
+                                  blurRadius: 10,
+                                  offset: Offset(0, 1)),
+                            ],
+                          ),
+                          child: Row(
                             children: [
-                              Text(
-                                "${ordemServicoController.filteredOrdemservicos[index].id}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 14),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 7.0),
-                                child: Row(
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(
-                                      Icons.person,
-                                      size: 12,
-                                      color: Colors.grey,
+                                    Text(
+                                      "${ordemServicoController
+                                          .ordemservicos[index].id}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                          "${ordemServicoController.filteredOrdemservicos[index].nomeCli}",
-                                          style: const TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.grey)),
+                                      padding: const EdgeInsets.only(top: 7.0),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.person,
+                                            size: 12,
+                                            color: Colors.grey,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: Text(
+                                                "${ordemServicoController
+                                                    .ordemservicos[index]
+                                                    .nomeCli}",
+                                                style: const TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.grey)),
+                                          ),
+                                        ],
+                                      ),
                                     ),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.calendar_month,
+                                            size: 12, color: Colors.grey),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0),
+                                          child: Text(
+                                            "${DataFormato.getDate(
+                                                ordemServicoController
+                                                    .ordemservicos[index].data,
+                                                DataFormato.formatDDMMYYYY)}",
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.grey),
+                                          ),
+                                        )
+                                      ],
+                                    )
                                   ],
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  Icon(Icons.calendar_month,
-                                      size: 12, color: Colors.grey),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Text(
-                                      "${DataFormato.getDate(ordemServicoController.filteredOrdemservicos[index].data, DataFormato.formatDDMMYYYY)}",
-                                      style: const TextStyle(
-                                          fontSize: 15, color: Colors.grey),
-                                    ),
-                                  )
-                                ],
-                              )
                             ],
                           ),
                         ),
-                        Column(
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                            title: Text("Ordem de Serviço"),
-                                            actions: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  children: [
-                                                    TextFormField(
-                                                      decoration:
-                                                          const InputDecoration(
-                                                              labelText:
-                                                                  "Pontos de Melhoria"),
-                                                      enabled: false,
-                                                      initialValue:
-                                                          "${ordemServicoController.filteredOrdemservicos[index].pontosMelhorias}",
-                                                    ),
-                                                    TextFormField(
-                                                      decoration:
-                                                          const InputDecoration(
-                                                              labelText:
-                                                                  "Relatório"),
-                                                      enabled: false,
-                                                      initialValue:
-                                                          "${ordemServicoController.filteredOrdemservicos[index].relMonitor}",
-                                                    ),
-                                                    TextFormField(
-                                                      decoration:
-                                                          const InputDecoration(
-                                                              labelText:
-                                                                  "Observação"),
-                                                      enabled: false,
-                                                      initialValue:
-                                                          "${ordemServicoController.filteredOrdemservicos[index].observacoes}",
-                                                    ),
-                                                    TextFormField(
-                                                      decoration:
-                                                          const InputDecoration(
-                                                              labelText:
-                                                                  "Comentários"),
-                                                      enabled: false,
-                                                      initialValue:
-                                                          "${ordemServicoController.filteredOrdemservicos[index].comentarios}",
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ));
-                                },
-                                icon: const Icon(
-                                  Icons.info_outline,
-                                  size: 18,
-                                )),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          )),
-          Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: FloatingActionButton(
-                onPressed: () {
-                  setState(() {
-                    ordemServicoController.order();
-                  });
-                },
-                child: Icon(Icons.swap_vert_outlined),
-              ))
+                      ),
+                    );
+                  }))
         ],
       ),
     );
   }
 
   Future init() async {
-    print(ordemServicoController.sincronizado);
-    await ordemServicoController.getOs(sincronizado: ordemServicoController.sincronizado);
-    await departamentoController.getDepartamentos(sincronizado: ordemServicoController.sincronizado);
-    await armadilhaController.getArmadilhas(sincronizado: ordemServicoController.sincronizado);
-    ordemServicoController.sincronizado = false;
-    print(armadilhaController.armadilhas);
+    final snackBar = SnackBar(
+      content: Text("Erro ao sincronizar, verifique seu sinal de internet!"),
+      duration:Duration(seconds: 3),
+      backgroundColor: Colors.red,
+    );
+    await ordemServicoController.getAllOs() == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
     setState(() {});
   }
 }

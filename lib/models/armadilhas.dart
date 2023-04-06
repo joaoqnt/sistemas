@@ -1,33 +1,33 @@
 class Armadilha {
- int? id;
- String? nome;
- int? departamento;
- String? status;
- int? os;
+  int? id;
+  String? nome;
+  int? departamento;
+  String? status;
+  String? pendente;
 
- Armadilha({this.id, this.nome, this.status});
+  Armadilha({this.id, this.nome, this.status, this.pendente});
 
- Armadilha.fromJson(Map<String, dynamic> json) {
-  id = json['ID'];
-  nome = json['NOME'];
-  departamento = json['DEPARTAMENTO'];
-  status = json['STATUS'];
-  os = json['OS'];
- }
-
- Map<String, dynamic> toJson() {
-  final Map<String, dynamic> data = new Map<String, dynamic>();
-  data['ID'] = this.id;
-  data['NOME'] = this.nome;
-  data['DEPARTAMENTO'] = this.departamento;
-  data['STATUS'] = this.status;
-  data['OS'] = this.os;
-  return data;
- }
- @override
-  String toString() {
-    // TODO: implement toString
-    return '$id ,"${nome}",$departamento,"${status}",$os';
+  Armadilha.fromJson(Map<String, dynamic> json) {
+    id = json['ID'];
+    nome = json['NOME'];
+    departamento = json['DEPARTAMENTO'];
+    status = json['STATUS'];
+    pendente = json['PENDENTE'];
   }
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['ID'] = this.id;
+    data['NOME'] = this.nome;
+    data['DEPARTAMENTO'] = this.departamento;
+    data['STATUS'] = this.status;
+    data['PENDENTE'] = this.pendente;
+    return data;
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return '$id ,"${nome}",$departamento,"${status}","${pendente}"';
+  }
 }

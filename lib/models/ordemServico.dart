@@ -1,3 +1,5 @@
+import 'package:microsistema/models/departamentos.dart';
+
 class OrdemServico {
   int? id;
   int? idCli;
@@ -7,6 +9,7 @@ class OrdemServico {
   String? relMonitor;
   String? observacoes;
   String? comentarios;
+  List<Departamento>? departamentos = [];
 
   OrdemServico(
       {this.id,
@@ -16,7 +19,8 @@ class OrdemServico {
         this.pontosMelhorias,
         this.relMonitor,
         this.observacoes,
-        this.comentarios});
+        this.comentarios
+      });
 
   OrdemServico.fromJson(Map<String, dynamic> json) {
     id = json['ID'];
@@ -46,4 +50,6 @@ class OrdemServico {
   String toString() {
     return '$id,$idCli,"${nomeCli}","${data}","${pontosMelhorias}","${relMonitor}","${observacoes}","${comentarios}"';
   }
+
+
 }

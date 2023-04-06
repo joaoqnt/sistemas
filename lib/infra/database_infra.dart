@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DatabaseRepository {
+class DatabaseInfra {
   static Database? _db;
 
   Future<Database?> get db async {
@@ -54,6 +54,7 @@ class DatabaseRepository {
         OS            INT,
         NOME          text,
         STATUS        text,
+        PENDENTE      text,
         PRIMARY KEY (ID, DEPARTAMENTO,OS));'''
     );
     print(" onCreate =====================================");
@@ -70,9 +71,9 @@ class DatabaseRepository {
     return lista;
   }
 
-  insertData(String sql) async {
+  insertDataBinding(String table, Map<String,dynamic> values) async {
     Database? mydb = await db;
-    int response = await mydb!.rawInsert(sql);
+    int response = await mydb!.insert(table, values);
     return response;
   }
 
@@ -88,8 +89,4 @@ class DatabaseRepository {
     return response;
   }
 
-// SELECT
-// DELETE
-// UPDATE
-// INSERT
 }
