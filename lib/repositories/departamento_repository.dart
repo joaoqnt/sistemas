@@ -18,6 +18,7 @@ class DepartamentoRepository{
     return listDep;
   }
 
-  void saveDepartamento(Departamento departamento, String table) {
+  Future<int> saveDepartamento(Map<String,dynamic> departamento, String table) async {
+    return await database.insertDataBinding(table, departamento);
   }
 }

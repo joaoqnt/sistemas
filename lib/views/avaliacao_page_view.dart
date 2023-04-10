@@ -27,7 +27,26 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
         centerTitle: true,
         actions: [
           InkWell(
-            onTap : () async{
+            onTap : avaliacaoController.armadilhaSelected == null ? null : () async{
+              avaliacaoController.armadilhas.where((element) => element.pendente == 'S').forEach((arm) async{
+                final snackBar = SnackBar(
+                  content: Text("Erro ao salvar, verifique seu sinal de internet!"),
+                  duration:Duration(seconds: 3),
+                  backgroundColor: Colors.red,
+                );
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Center(child: CircularProgressIndicator());
+                    });
+                await avaliacaoController.updateArmadilhas(
+                    arm,
+                    widget.ordemSelected.id!,
+                    avaliacaoController.departamentoSelected!.id!
+                ) == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                //print(arm);,
+                Navigator.of(context).pop();
+              });
             },
             child: Icon(Icons.save),
           )

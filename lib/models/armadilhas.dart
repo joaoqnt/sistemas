@@ -15,10 +15,11 @@ class Armadilha {
     pendente = json['PENDENTE'];
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({int? os}) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['ID'] = this.id;
     data['NOME'] = this.nome;
+    data['OS'] = os;
     data['DEPARTAMENTO'] = this.departamento;
     data['STATUS'] = this.status;
     data['PENDENTE'] = this.pendente;

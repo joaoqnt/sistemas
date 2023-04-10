@@ -14,6 +14,7 @@ class OsPageView extends StatefulWidget {
 class _OsPageViewState extends State<OsPageView> {
   OrdemServicoController ordemServicoController = OrdemServicoController();
 
+
   @override
   void initState() {
     super.initState();
@@ -21,7 +22,7 @@ class _OsPageViewState extends State<OsPageView> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController tecBusca = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Ordem de Serviço"),
@@ -37,7 +38,7 @@ class _OsPageViewState extends State<OsPageView> {
                   });
               await init();
               Navigator.of(context).pop();
-              print(ordemServicoController.ordemservicos);
+              print(ordemServicoController.filteredOrdemservicos);
             },
           )
         ],
@@ -50,16 +51,15 @@ class _OsPageViewState extends State<OsPageView> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: tecBusca,
-                    //keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
+                  child: TextFormField(
+                    controller:ordemServicoController.tecBusca,
+                    decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       labelText: "Pesquise",
                     ),
                     onChanged: (value) {
                       setState(() {
-                        // ordemServicoController.filterOs(value);
+                        ordemServicoController.filterOs(value);
                       });
                     },
                   ),
@@ -69,12 +69,12 @@ class _OsPageViewState extends State<OsPageView> {
           ),
           Expanded(
               child: ListView.builder(
-                  itemCount: ordemServicoController.ordemservicos.length,
+                  itemCount: ordemServicoController.filteredOrdemservicos.length,
                   itemBuilder: (context, index) {
                     return Card(
                       child: InkWell(
                         onTap: () {
-                          ordemServicoController.ordemServicoSellected = ordemServicoController.ordemservicos[index];
+                          ordemServicoController.ordemServicoSellected = ordemServicoController.filteredOrdemservicos[index];
                           Navigator.push(context,
                               MaterialPageRoute(builder: (BuildContext) =>
                                   AvaliacaoPageView(ordemServicoController.ordemServicoSellected!)
@@ -102,7 +102,7 @@ class _OsPageViewState extends State<OsPageView> {
                                   children: [
                                     Text(
                                       "${ordemServicoController
-                                          .ordemservicos[index].id}",
+                                          .filteredOrdemservicos[index].id}",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14),
@@ -121,7 +121,7 @@ class _OsPageViewState extends State<OsPageView> {
                                                 left: 8.0),
                                             child: Text(
                                                 "${ordemServicoController
-                                                    .ordemservicos[index]
+                                                    .filteredOrdemservicos[index]
                                                     .nomeCli}",
                                                 style: const TextStyle(
                                                     fontSize: 15,
@@ -140,7 +140,7 @@ class _OsPageViewState extends State<OsPageView> {
                                           child: Text(
                                             "${DataFormato.getDate(
                                                 ordemServicoController
-                                                    .ordemservicos[index].data,
+                                                    .filteredOrdemservicos[index].data,
                                                 DataFormato.formatDDMMYYYY)}",
                                             style: const TextStyle(
                                                 fontSize: 15,
@@ -152,6 +152,68 @@ class _OsPageViewState extends State<OsPageView> {
                                   ],
                                 ),
                               ),
+                              Column(
+                                children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: Text("Ordem de Serviço"),
+                                              actions: [
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    children: [
+                                                      TextFormField(
+                                                        decoration:
+                                                        const InputDecoration(
+                                                            labelText:
+                                                            "Pontos de Melhoria"),
+                                                        enabled: false,
+                                                        initialValue:
+                                                        "${ordemServicoController.filteredOrdemservicos[index].pontosMelhorias}",
+                                                      ),
+                                                      TextFormField(
+                                                        decoration:
+                                                        const InputDecoration(
+                                                            labelText:
+                                                            "Relatório"),
+                                                        enabled: false,
+                                                        initialValue:
+                                                        "${ordemServicoController.filteredOrdemservicos[index].relMonitor}",
+                                                      ),
+                                                      TextFormField(
+                                                        decoration:
+                                                        const InputDecoration(
+                                                            labelText:
+                                                            "Observação"),
+                                                        enabled: false,
+                                                        initialValue:
+                                                        "${ordemServicoController.filteredOrdemservicos[index].observacoes}",
+                                                      ),
+                                                      TextFormField(
+                                                        decoration:
+                                                        const InputDecoration(
+                                                            labelText:
+                                                            "Comentários"),
+                                                        enabled: false,
+                                                        initialValue:
+                                                        "${ordemServicoController.filteredOrdemservicos[index].comentarios}",
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ));
+                                      },
+                                      icon: const Icon(
+                                        Icons.info_outline,
+                                        size: 18,
+                                      )),
+                                ],
+                              )
                             ],
                           ),
                         ),

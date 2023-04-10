@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:microsistema/infra/database_infra.dart';
 import 'package:microsistema/models/ordemServico.dart';
+import 'package:microsistema/repositories/armadilha_repository.dart';
 import 'package:microsistema/repositories/departamento_repository.dart';
 
 class OrdemServicoRepository {
@@ -9,6 +10,8 @@ class OrdemServicoRepository {
   Future<bool> getAllOsApi() async {
     var http = Dio();
     try{
+      DepartamentoRepository departamentoRepository = DepartamentoRepository();
+      ArmadilhaRepository armadilhaRepository = ArmadilhaRepository();
       Response response = await http.get(
           'https://compraonline.app/api/v5/eco_grupoproduto/grupo_produto/os',
           options: Options(headers: {'tenant': 'arcuseco_03683003000165'}));
@@ -22,13 +25,13 @@ class OrdemServicoRepository {
           saveOrdem(element, "ordem_servico");
           map.where((mapElement) => mapElement['OS'] == element['ID']).toList().forEach((dpt) {
             dpt['OS'] = element['ID'];
-            saveOrdem(dpt, 'departamentos');
+            departamentoRepository.saveDepartamento(dpt, 'departamentos');
             List arm = results['armadilhas'];
             arm.where((mapArm) => mapArm['OS'] == element['ID']
                 && mapArm['DEPARTAMENTO'] == dpt['ID']).toList().forEach((armadilha) {
               armadilha['OS'] == element['ID'];
               armadilha['DEPARTAMENTO'] == dpt['ID'];
-              saveOrdem(armadilha, "armadilhas");
+              armadilhaRepository.saveArmadilha(armadilha, "armadilhas");
             });
           });
         });
