@@ -18,6 +18,6 @@ class DepartamentoRepository{
     return listDep;
   }
 
-  void save(List<Departamento> departamentos) {
+  void saveDepartamento(Departamento departamento, String table) {
   }
 }

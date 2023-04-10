@@ -44,8 +44,9 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                 );
               }).toList(),
               onChanged: (value) async {
+                avaliacaoController.departamentoSelected = value;
+                avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
                 setState(() {
-                  avaliacaoController.departamentoSelected = value;
                   listWidget();
                 });
               },
@@ -88,10 +89,11 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                                   setState(() {
                                     avaliacaoController.departamentoSelected!.armadilhas![index].status =
                                         value.toString();
-
                                     avaliacaoController.armadilhaSelected =
                                     avaliacaoController.departamentoSelected!.armadilhas![index];
-
+                                    avaliacaoController.armadilhaSelected!.pendente ='S';
+                                    print(avaliacaoController.armadilhaSelected);
+                                    print(avaliacaoController.armadilhas);
                                   });
                                 })
                           ],

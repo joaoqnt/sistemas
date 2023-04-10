@@ -23,6 +23,6 @@ class AvaliacaoController{
   }
 
   int contaArmadilha({String? status}){
-    return armadilhas.length;
+    return armadilhas.where((element) => element.status == status).length;
   }
 }
