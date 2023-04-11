@@ -17,6 +17,7 @@ class _OsPageViewState extends State<OsPageView> {
 
   @override
   void initState() {
+    initialize();
     super.initState();
   }
 
@@ -36,7 +37,7 @@ class _OsPageViewState extends State<OsPageView> {
                   builder: (context) {
                     return Center(child: CircularProgressIndicator());
                   });
-              await init();
+              await sincronize();
               Navigator.of(context).pop();
               print(ordemServicoController.filteredOrdemservicos);
             },
@@ -116,16 +117,18 @@ class _OsPageViewState extends State<OsPageView> {
                                             size: 12,
                                             color: Colors.grey,
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0),
-                                            child: Text(
-                                                "${ordemServicoController
-                                                    .filteredOrdemservicos[index]
-                                                    .nomeCli}",
-                                                style: const TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.grey)),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Text(
+                                                  "${ordemServicoController
+                                                      .filteredOrdemservicos[index]
+                                                      .nomeCli}",
+                                                  style: const TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.grey)),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -225,7 +228,7 @@ class _OsPageViewState extends State<OsPageView> {
     );
   }
 
-  Future init() async {
+  Future sincronize() async {
     final snackBar = SnackBar(
       content: Text("Erro ao sincronizar, verifique seu sinal de internet!"),
       duration:Duration(seconds: 3),
@@ -234,5 +237,12 @@ class _OsPageViewState extends State<OsPageView> {
     await ordemServicoController.getAllOs() == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
     setState(() {});
+  }
+
+  Future initialize() async{
+    await ordemServicoController.getAllBd();
+    setState(() {
+
+    });
   }
 }

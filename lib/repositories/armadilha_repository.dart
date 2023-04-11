@@ -30,9 +30,9 @@ class ArmadilhaRepository{
         "where id = ${armadilha.id} and os = $os and departamento = $departamento;");
     try{
        response = await http.post(
-          'https://compraonline.app/api/v5/json/eco_grupoproduto/grupo_produto/atualiza_status',
+          'http://mundolivre.dyndns.info:8083/api/v5/json/et2erp/querys/atualiza_status',
           options: Options(headers:{
-            'tenant': 'arcuseco_03683003000165',
+            'tenant': 'integrador_41806514000116',
             HttpHeaders.contentTypeHeader: "application/json",
           }),
           data: armadilhaEncoded

@@ -65,6 +65,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
               onChanged: (value) async {
                 avaliacaoController.departamentoSelected = value;
                 avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
+                print(avaliacaoController.departamentoSelected);
                 setState(() {
                   listWidget();
                 });

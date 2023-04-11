@@ -22,4 +22,9 @@ class OrdemServicoController{
     element.id.toString().contains(busca.toString()) ||
         element.nomeCli!.toLowerCase().contains(busca!.toLowerCase())).toList();
   }
+
+  Future getAllBd() async{
+    ordemservicos = await repository.getAllOsBd();
+    filteredOrdemservicos = ordemservicos;
+  }
 }

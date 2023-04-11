@@ -13,8 +13,8 @@ class OrdemServicoRepository {
       DepartamentoRepository departamentoRepository = DepartamentoRepository();
       ArmadilhaRepository armadilhaRepository = ArmadilhaRepository();
       Response response = await http.get(
-          'https://compraonline.app/api/v5/eco_grupoproduto/grupo_produto/os',
-          options: Options(headers: {'tenant': 'arcuseco_03683003000165'}));
+          'http://mundolivre.dyndns.info:8083/api/v5/et2erp/querys/os',
+          options: Options(headers: {'tenant': 'integrador_41806514000116'}));
       if (response.statusCode == 200) {
         cleanTable('ordem_servico');
         cleanTable('departamentos');
