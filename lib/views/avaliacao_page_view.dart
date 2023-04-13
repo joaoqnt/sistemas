@@ -23,7 +23,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de Armadilhas"),
+        title: Text("Ref. de Monitoramento"),
         centerTitle: true,
         actions: [
           InkWell(
@@ -94,7 +94,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                         child: Row(
                           children: [
                             Expanded(
-                                child: Text("${avaliacaoController.departamentoSelected!.armadilhas![index].nome}")
+                                child: Text("Armadilha ${avaliacaoController.departamentoSelected!.armadilhas![index].nome}")
                             ),
                             DropdownButton(
                               //key: ,
@@ -136,16 +136,13 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
   List<Widget> listWidget(){
     List<Widget> l = [];
     avaliacaoController.listStatus.forEach((element) {
-      l.add(Text(
-          '$element:'
-              '${avaliacaoController.contaArmadilha(status: element)
-          }',
+      l.add(Text('$element:''${avaliacaoController.contaArmadilha(status: element)}',
           style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold))
       );
     });
-
     return l;
   }
+
   Future init() async{
     await avaliacaoController.getAllDep(widget.ordemSelected.id!);
     setState(() {

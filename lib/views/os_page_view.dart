@@ -17,7 +17,7 @@ class _OsPageViewState extends State<OsPageView> {
 
   @override
   void initState() {
-    initialize();
+    //initialize();
     super.initState();
   }
 
@@ -229,20 +229,17 @@ class _OsPageViewState extends State<OsPageView> {
   }
 
   Future sincronize() async {
-    final snackBar = SnackBar(
+    const snackBar = SnackBar(
       content: Text("Erro ao sincronizar, verifique seu sinal de internet!"),
       duration:Duration(seconds: 3),
       backgroundColor: Colors.red,
     );
     await ordemServicoController.getAllOs() == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
     setState(() {});
   }
 
   Future initialize() async{
     await ordemServicoController.getAllBd();
-    setState(() {
-
-    });
+    setState(() {});
   }
 }

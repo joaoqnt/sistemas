@@ -46,7 +46,7 @@ class OrdemServicoRepository {
     DepartamentoRepository departamentoRepository = DepartamentoRepository();
     List<dynamic> lista = [];
     List<OrdemServico> listOs = [];
-    lista = await database.selectData("select * from 'ordem_servico'");
+    lista = await database.selectData("select * from 'ordem_servico' order by id desc");
     lista.forEach((element) async {
       OrdemServico os = OrdemServico.fromJson(element);
       listOs.add(os);

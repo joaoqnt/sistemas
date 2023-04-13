@@ -17,7 +17,7 @@ class DatabaseInfra {
     String databasepath = await getDatabasesPath();
     String path = join(databasepath, 'green.db');
     Database mydb = await openDatabase(path,
-        onCreate: _onCreate, version: 3, onUpgrade: _onUpgrade);
+        onCreate: _onCreate, version: 1, onUpgrade: _onUpgrade);
     return mydb;
   }
 
