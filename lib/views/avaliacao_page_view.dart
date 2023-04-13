@@ -77,47 +77,55 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                 itemCount: avaliacaoController.departamentoSelected!.armadilhas!.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    child: Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(3),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                //spreadRadius: 5,
-                                blurRadius: 10,
-                                offset: Offset(0, 1)
-                            ),
-                          ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            // mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color.fromRGBO(213, 211, 211, 100),
+                                  ),
+                                  // alignment: AlignmentDirectional.center,
+                                  constraints: const BoxConstraints(minHeight: 60, minWidth: 60),
+                                  child: Center(
+                                    child: Text(
+                                      "${avaliacaoController.departamentoSelected!.armadilhas![index].nome}",
+                                      style: TextStyle(color: Colors.lightBlue,fontSize: 18),
+                                    ),
+                                  )
+                              ),
+                            ],
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                child: Text("Armadilha ${avaliacaoController.departamentoSelected!.armadilhas![index].nome}")
-                            ),
-                            DropdownButton(
-                              //key: ,
-                                value: avaliacaoController.departamentoSelected!.armadilhas![index].status, //mapStatus[index],
-                                items: avaliacaoController.listStatus.map((e) {
-                                  return DropdownMenuItem(
-                                      value: e,
-                                      child: Text(e)
-                                  );
-                                }).toList(),
-                                onChanged: (value){
-                                  setState(() {
-                                    avaliacaoController.departamentoSelected!.armadilhas![index].status =
-                                        value.toString();
-                                    avaliacaoController.armadilhaSelected =
-                                    avaliacaoController.departamentoSelected!.armadilhas![index];
-                                    avaliacaoController.armadilhaSelected!.pendente ='S';
-                                    print(avaliacaoController.armadilhaSelected);
-                                    print(avaliacaoController.armadilhas);
-                                  });
-                                })
-                          ],
-                        )
+                        DropdownButton(
+                          //key: ,
+                            value: avaliacaoController.departamentoSelected!.armadilhas![index].status, //mapStatus[index],
+                            items: avaliacaoController.listStatus.map((e) {
+                              return DropdownMenuItem(
+                                  value: e,
+                                  child: Text(e)
+                              );
+                            }).toList(),
+                            onChanged: (value){
+                              setState(() {
+                                avaliacaoController.departamentoSelected!.armadilhas![index].status =
+                                    value.toString();
+                                avaliacaoController.armadilhaSelected =
+                                avaliacaoController.departamentoSelected!.armadilhas![index];
+                                avaliacaoController.armadilhaSelected!.pendente ='S';
+                                print(avaliacaoController.armadilhaSelected);
+                                print(avaliacaoController.armadilhas);
+                              });
+                            })
+                      ],
                     ),
                   );
                 },

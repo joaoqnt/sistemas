@@ -13,7 +13,7 @@ class OsPageView extends StatefulWidget {
 
 class _OsPageViewState extends State<OsPageView> {
   OrdemServicoController ordemServicoController = OrdemServicoController();
-
+  int position = -1;
 
   @override
   void initState() {
@@ -23,7 +23,6 @@ class _OsPageViewState extends State<OsPageView> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Ordem de Serviço"),
@@ -53,7 +52,7 @@ class _OsPageViewState extends State<OsPageView> {
               children: [
                 Expanded(
                   child: TextFormField(
-                    controller:ordemServicoController.tecBusca,
+                    controller: ordemServicoController.tecBusca,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       labelText: "Pesquise",
@@ -70,151 +69,191 @@ class _OsPageViewState extends State<OsPageView> {
           ),
           Expanded(
               child: ListView.builder(
-                  itemCount: ordemServicoController.filteredOrdemservicos.length,
+                  itemCount:
+                      ordemServicoController.filteredOrdemservicos.length,
                   itemBuilder: (context, index) {
                     return Card(
                       child: InkWell(
                         onTap: () {
-                          ordemServicoController.ordemServicoSellected = ordemServicoController.filteredOrdemservicos[index];
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (BuildContext) =>
-                                  AvaliacaoPageView(ordemServicoController.ordemServicoSellected!)
-                              )
-                          );
+                          ordemServicoController.ordemServicoSellected =
+                              ordemServicoController
+                                  .filteredOrdemservicos[index];
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext) => AvaliacaoPageView(
+                                      ordemServicoController
+                                          .ordemServicoSellected!)));
                         },
                         child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(3),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  //spreadRadius: 5,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 1)),
-                            ],
-                          ),
+                          constraints: BoxConstraints(minHeight: position != index ? 70 : 180),
                           child: Row(
+                            crossAxisAlignment: position != index ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${ordemServicoController
-                                          .filteredOrdemservicos[index].id}",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 7.0),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.person,
-                                            size: 12,
-                                            color: Colors.grey,
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: Text(
-                                                  "${ordemServicoController
-                                                      .filteredOrdemservicos[index]
-                                                      .nomeCli}",
-                                                  style: const TextStyle(
-                                                      fontSize: 15,
-                                                      color: Colors.grey)),
-                                            ),
-                                          ),
-                                        ],
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color:
+                                            Color.fromRGBO(213, 211, 211, 100)),
+                                    constraints: const BoxConstraints(
+                                        minHeight: 60, minWidth: 60),
+                                    // alignment: AlignmentDirectional.topStart,
+                                    child: Center(
+                                      child: Text(
+                                          "${DataFormato.getDate(ordemServicoController.ordemservicos[index].data, "dd/MM")}",
+                                          style:
+                                              TextStyle(color: Colors.lightBlue)
                                       ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Icon(Icons.calendar_month,
-                                            size: 12, color: Colors.grey),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0),
-                                          child: Text(
-                                            "${DataFormato.getDate(
-                                                ordemServicoController
-                                                    .filteredOrdemservicos[index].data,
-                                                DataFormato.formatDDMMYYYY)}",
-                                            style: const TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.grey),
-                                          ),
-                                        )
-                                      ],
                                     )
-                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 8.0, top: position != index ? 0.0 : 8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${ordemServicoController.ordemservicos[index].id}",
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                      position != index
+                                          ? Container() : Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.person,
+                                                size: 12,
+                                                color: Colors.grey,
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      left: 8.0),
+                                                  child: Text(
+                                                      "${ordemServicoController
+                                                          .filteredOrdemservicos[index]
+                                                          .nomeCli}",
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          color: Colors.grey)),
+                                                )
+                                              )
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.comment,
+                                                size: 12,
+                                                color: Colors.grey,
+                                              ),
+                                              Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(
+                                                        left: 8.0),
+                                                    child: Text(
+                                                        "${ordemServicoController
+                                                            .filteredOrdemservicos[index]
+                                                            .pontosMelhorias}",
+                                                        style: const TextStyle(
+                                                            fontSize: 15,
+                                                            color: Colors.grey)),
+                                                  )
+                                              )
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.comment,
+                                                size: 12,
+                                                color: Colors.grey,
+                                              ),
+                                              Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(
+                                                        left: 8.0),
+                                                    child: Text(
+                                                        "${ordemServicoController
+                                                            .filteredOrdemservicos[index]
+                                                            .comentarios}",
+                                                        style: const TextStyle(
+                                                            fontSize: 15,
+                                                            color: Colors.grey)),
+                                                  )
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.comment,
+                                                size: 12,
+                                                color: Colors.grey,
+                                              ),
+                                              Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(
+                                                        left: 8.0),
+                                                    child: Text(
+                                                        "${ordemServicoController
+                                                            .filteredOrdemservicos[index]
+                                                            .observacoes}",
+                                                        style: const TextStyle(
+                                                            fontSize: 15,
+                                                            color: Colors.grey)),
+                                                  )
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.comment,
+                                                size: 12,
+                                                color: Colors.grey,
+                                              ),
+                                              Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(
+                                                        left: 8.0),
+                                                    child: Text(
+                                                        "${ordemServicoController
+                                                            .filteredOrdemservicos[index]
+                                                            .relMonitor}",
+                                                        style: const TextStyle(
+                                                            fontSize: 15,
+                                                            color: Colors.grey)),
+                                                  )
+                                              ),
+
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                               Column(
                                 children: [
                                   IconButton(
                                       onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: Text("Ordem de Serviço"),
-                                              actions: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.all(8.0),
-                                                  child: Column(
-                                                    children: [
-                                                      TextFormField(
-                                                        decoration:
-                                                        const InputDecoration(
-                                                            labelText:
-                                                            "Pontos de Melhoria"),
-                                                        enabled: false,
-                                                        initialValue:
-                                                        "${ordemServicoController.filteredOrdemservicos[index].pontosMelhorias}",
-                                                      ),
-                                                      TextFormField(
-                                                        decoration:
-                                                        const InputDecoration(
-                                                            labelText:
-                                                            "Relatório"),
-                                                        enabled: false,
-                                                        initialValue:
-                                                        "${ordemServicoController.filteredOrdemservicos[index].relMonitor}",
-                                                      ),
-                                                      TextFormField(
-                                                        decoration:
-                                                        const InputDecoration(
-                                                            labelText:
-                                                            "Observação"),
-                                                        enabled: false,
-                                                        initialValue:
-                                                        "${ordemServicoController.filteredOrdemservicos[index].observacoes}",
-                                                      ),
-                                                      TextFormField(
-                                                        decoration:
-                                                        const InputDecoration(
-                                                            labelText:
-                                                            "Comentários"),
-                                                        enabled: false,
-                                                        initialValue:
-                                                        "${ordemServicoController.filteredOrdemservicos[index].comentarios}",
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ));
+                                        if(position == index){
+                                          position = -1;
+                                        }else{
+                                          position = index;
+                                        }
+                                        setState(() {
+                                          print(position);
+                                        });
                                       },
-                                      icon: const Icon(
-                                        Icons.info_outline,
-                                        size: 18,
-                                      )),
+                                      icon: position == index ? Icon(Icons.expand_less) : Icon(Icons.expand_more)),
                                 ],
                               )
                             ],
@@ -231,14 +270,16 @@ class _OsPageViewState extends State<OsPageView> {
   Future sincronize() async {
     const snackBar = SnackBar(
       content: Text("Erro ao sincronizar, verifique seu sinal de internet!"),
-      duration:Duration(seconds: 3),
+      duration: Duration(seconds: 3),
       backgroundColor: Colors.red,
     );
-    await ordemServicoController.getAllOs() == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    await ordemServicoController.getAllOs() == true
+        ? null
+        : ScaffoldMessenger.of(context).showSnackBar(snackBar);
     setState(() {});
   }
 
-  Future initialize() async{
+  Future initialize() async {
     await ordemServicoController.getAllBd();
     setState(() {});
   }
