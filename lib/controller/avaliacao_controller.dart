@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:microsistema/models/armadilhas.dart';
 import 'package:microsistema/models/departamentos.dart';
 import 'package:microsistema/repositories/armadilha_repository.dart';
@@ -9,8 +10,15 @@ class AvaliacaoController{
   List<Departamento> departamentos = [];
   Armadilha? armadilhaSelected;
   List<Armadilha> armadilhas = [];
+  List<Armadilha> armadilhasFiltered = [];
   ArmadilhaRepository armadilhaRepository = ArmadilhaRepository();
+  String statusSelected = "Todos";
   List<String> listStatus = ['A', 'B', 'C', 'D', 'K','P','R','X'];
+  List<String> listStatusFilter = ['Todos','A', 'B', 'C', 'D', 'K','P','R','X'];
+  TextEditingController tecPontos = TextEditingController();
+  TextEditingController tecRelat = TextEditingController();
+  TextEditingController tecObserv = TextEditingController();
+  TextEditingController tecComent = TextEditingController();
 
 
   Future<List<Departamento>> getAllDep(int os) async{
@@ -29,5 +37,14 @@ class AvaliacaoController{
 
   Future<bool> updateArmadilhas(Armadilha armadilha, int os, int departamento) async{
     return await armadilhaRepository.updateArmadilha(armadilha, os, departamento);
+  }
+
+  filterArmadilhasByStatus({String? status}){
+    if(status!.toLowerCase() != "Todos".toLowerCase()){
+      statusSelected = status;
+      armadilhasFiltered = departamentoSelected!.armadilhas!.where((element) => element.status == status).toList();
+    }else{
+      armadilhasFiltered = departamentoSelected!.armadilhas!;
+    }
   }
 }

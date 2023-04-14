@@ -28,9 +28,9 @@ class _OsPageViewState extends State<OsPageView> {
         title: Text("Ordem de Serviço"),
         centerTitle: true,
         actions: [
-          InkWell(
-            child: Icon(Icons.refresh),
-            onTap: () async {
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () async {
               showDialog(
                   context: context,
                   builder: (context) {
@@ -86,7 +86,6 @@ class _OsPageViewState extends State<OsPageView> {
                                           .ordemServicoSellected!)));
                         },
                         child: Container(
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             //crossAxisAlignment: position != index ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                             children: [
@@ -96,7 +95,7 @@ class _OsPageViewState extends State<OsPageView> {
                                     decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color:
-                                            Color.fromRGBO(213, 211, 211, 100)),
+                                        Color.fromRGBO(243, 241, 241, 100)),
                                     constraints: const BoxConstraints(
                                         minHeight: 60, minWidth: 60),
                                     // alignment: AlignmentDirectional.topStart,
@@ -157,7 +156,7 @@ class _OsPageViewState extends State<OsPageView> {
                                   Text(
                                       "${DataFormato.getDate(
                                           ordemServicoController.ordemservicos[index].data, "dd/MM")}",
-                                      style: TextStyle(color: Colors.blueAccent,)),
+                                      style: TextStyle(color: Colors.blue,)),
                                   IconButton(
                                       onPressed: () {
                                         if(position == index){
