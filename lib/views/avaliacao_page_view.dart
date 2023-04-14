@@ -23,11 +23,14 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Ref. de Monitoramento"),
+        title: Text("Monitoramento"),
         centerTitle: true,
         actions: [
-          InkWell(
-            onTap : avaliacaoController.armadilhaSelected == null ? null : () async{
+          IconButton(
+              onPressed: (){},
+              icon: Icon(Icons.info)),
+          IconButton(
+            onPressed : avaliacaoController.armadilhaSelected == null ? null : () async{
               avaliacaoController.armadilhas.where((element) => element.pendente == 'S').forEach((arm) async{
                 final snackBar = SnackBar(
                   content: Text("Erro ao salvar, verifique seu sinal de internet!"),
@@ -48,8 +51,8 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                 Navigator.of(context).pop();
               });
             },
-            child: Icon(Icons.save),
-          )
+            icon: Icon(Icons.save),
+          ),
         ],
       ),
       body: Column(
@@ -105,26 +108,29 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                             ],
                           ),
                         ),
-                        DropdownButton(
-                          //key: ,
-                            value: avaliacaoController.departamentoSelected!.armadilhas![index].status, //mapStatus[index],
-                            items: avaliacaoController.listStatus.map((e) {
-                              return DropdownMenuItem(
-                                  value: e,
-                                  child: Text(e)
-                              );
-                            }).toList(),
-                            onChanged: (value){
-                              setState(() {
-                                avaliacaoController.departamentoSelected!.armadilhas![index].status =
-                                    value.toString();
-                                avaliacaoController.armadilhaSelected =
-                                avaliacaoController.departamentoSelected!.armadilhas![index];
-                                avaliacaoController.armadilhaSelected!.pendente ='S';
-                                print(avaliacaoController.armadilhaSelected);
-                                print(avaliacaoController.armadilhas);
-                              });
-                            })
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: DropdownButton(
+                            //key: ,
+                              value: avaliacaoController.departamentoSelected!.armadilhas![index].status, //mapStatus[index],
+                              items: avaliacaoController.listStatus.map((e) {
+                                return DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e)
+                                );
+                              }).toList(),
+                              onChanged: (value){
+                                setState(() {
+                                  avaliacaoController.departamentoSelected!.armadilhas![index].status =
+                                      value.toString();
+                                  avaliacaoController.armadilhaSelected =
+                                  avaliacaoController.departamentoSelected!.armadilhas![index];
+                                  avaliacaoController.armadilhaSelected!.pendente ='S';
+                                  print(avaliacaoController.armadilhaSelected);
+                                  print(avaliacaoController.armadilhas);
+                                });
+                              }),
+                        )
                       ],
                     ),
                   );

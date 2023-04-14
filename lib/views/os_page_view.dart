@@ -86,9 +86,9 @@ class _OsPageViewState extends State<OsPageView> {
                                           .ordemServicoSellected!)));
                         },
                         child: Container(
-                          constraints: BoxConstraints(minHeight: position != index ? 70 : 180),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                           child: Row(
-                            crossAxisAlignment: position != index ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                            //crossAxisAlignment: position != index ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -101,17 +101,18 @@ class _OsPageViewState extends State<OsPageView> {
                                         minHeight: 60, minWidth: 60),
                                     // alignment: AlignmentDirectional.topStart,
                                     child: Center(
-                                      child: Text(
-                                          "${DataFormato.getDate(ordemServicoController.ordemservicos[index].data, "dd/MM")}",
-                                          style:
-                                              TextStyle(color: Colors.lightBlue)
-                                      ),
+                                      child: Icon(Icons.receipt_long)
+                                      // Text(""
+                                      //     "${DataFormato.getDate(ordemServicoController.ordemservicos[index].data, "dd/MM")}",
+                                      //     style:
+                                      //         TextStyle(color: Colors.lightBlue)
+                                      // ),
                                     )
                                 ),
                               ),
                               Expanded(
                                 child: Padding(
-                                  padding: EdgeInsets.only(left: 8.0, top: position != index ? 0.0 : 8.0),
+                                  padding: EdgeInsets.only(left: 8.0),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -145,95 +146,6 @@ class _OsPageViewState extends State<OsPageView> {
                                               )
                                             ],
                                           ),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.comment,
-                                                size: 12,
-                                                color: Colors.grey,
-                                              ),
-                                              Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        left: 8.0),
-                                                    child: Text(
-                                                        "${ordemServicoController
-                                                            .filteredOrdemservicos[index]
-                                                            .pontosMelhorias}",
-                                                        style: const TextStyle(
-                                                            fontSize: 15,
-                                                            color: Colors.grey)),
-                                                  )
-                                              )
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.comment,
-                                                size: 12,
-                                                color: Colors.grey,
-                                              ),
-                                              Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        left: 8.0),
-                                                    child: Text(
-                                                        "${ordemServicoController
-                                                            .filteredOrdemservicos[index]
-                                                            .comentarios}",
-                                                        style: const TextStyle(
-                                                            fontSize: 15,
-                                                            color: Colors.grey)),
-                                                  )
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.comment,
-                                                size: 12,
-                                                color: Colors.grey,
-                                              ),
-                                              Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        left: 8.0),
-                                                    child: Text(
-                                                        "${ordemServicoController
-                                                            .filteredOrdemservicos[index]
-                                                            .observacoes}",
-                                                        style: const TextStyle(
-                                                            fontSize: 15,
-                                                            color: Colors.grey)),
-                                                  )
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.comment,
-                                                size: 12,
-                                                color: Colors.grey,
-                                              ),
-                                              Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        left: 8.0),
-                                                    child: Text(
-                                                        "${ordemServicoController
-                                                            .filteredOrdemservicos[index]
-                                                            .relMonitor}",
-                                                        style: const TextStyle(
-                                                            fontSize: 15,
-                                                            color: Colors.grey)),
-                                                  )
-                                              ),
-
-                                            ],
-                                          )
                                         ],
                                       )
                                     ],
@@ -242,6 +154,10 @@ class _OsPageViewState extends State<OsPageView> {
                               ),
                               Column(
                                 children: [
+                                  Text(
+                                      "${DataFormato.getDate(
+                                          ordemServicoController.ordemservicos[index].data, "dd/MM")}",
+                                      style: TextStyle(color: Colors.blueAccent,)),
                                   IconButton(
                                       onPressed: () {
                                         if(position == index){
