@@ -87,7 +87,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
       ),
       body: Column(
         children: [
-          Row(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               DropdownButton(
@@ -121,7 +121,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                     }).toList(),
                     onChanged: (value){
                       avaliacaoController.statusSelected = value.toString();
-                      avaliacaoController.filterArmadilhasByStatus(status: avaliacaoController.statusSelected);
+                      avaliacaoController.filterArmadilhasByStatus(status: value.toString());
                       setState(() {
                         print(avaliacaoController.armadilhasFiltered);
                       });
@@ -144,7 +144,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                               Container(
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Color.fromRGBO(243, 241, 241, 100),
+                                    color: Color.fromRGBO(248, 246, 247, 100),
                                   ),
                                   constraints: const BoxConstraints(minHeight: 60, minWidth: 60),
                                   child: Center(
@@ -175,18 +175,15 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                                 );
                               }).toList(),
                               onChanged: (value){
-                                avaliacaoController.departamentoSelected!.armadilhas![index].status =
-                                    value.toString();
-                                avaliacaoController.armadilhaSelected =
-                                avaliacaoController.departamentoSelected!.armadilhas![index];
+                                avaliacaoController.armadilhasFiltered![index].status = value.toString();
+                                avaliacaoController.armadilhaSelected = avaliacaoController.armadilhasFiltered![index];
                                 avaliacaoController.armadilhaSelected!.pendente ='S';
-                                avaliacaoController.statusSelected != "Todos" ?
+                                avaliacaoController.statusSelected != "Todos"?
                                 avaliacaoController.filterArmadilhasByStatus(status: value.toString()) :
-                                null;// avaliacaoController.filterArmadilhasByStatus(status: "Todos");
+                                null;
                                 setState(() {
 
                                   print(avaliacaoController.armadilhaSelected);
-                                  // print(avaliacaoController.armadilhas);
                                 });
                               }),
                         )

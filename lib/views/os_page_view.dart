@@ -95,7 +95,7 @@ class _OsPageViewState extends State<OsPageView> {
                                     decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color:
-                                        Color.fromRGBO(243, 241, 241, 100)),
+                                        Color.fromRGBO(248, 246, 247, 100)),
                                     constraints: const BoxConstraints(
                                         minHeight: 60, minWidth: 60),
                                     // alignment: AlignmentDirectional.topStart,
@@ -156,7 +156,7 @@ class _OsPageViewState extends State<OsPageView> {
                                   Text(
                                       "${DataFormato.getDate(
                                           ordemServicoController.ordemservicos[index].data, "dd/MM")}",
-                                      style: TextStyle(color: Colors.blue,)),
+                                      style: TextStyle(color: Color.fromRGBO(8, 8, 8, 1),)),
                                   IconButton(
                                       onPressed: () {
                                         if(position == index){
