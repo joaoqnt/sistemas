@@ -47,4 +47,14 @@ class AvaliacaoController{
       armadilhasFiltered = departamentoSelected!.armadilhas!;
     }
   }
+
+  List<Widget> listWidget(){
+    List<Widget> l = [];
+    listStatus.forEach((element) {
+      l.add(Text('$element:''${contaArmadilha(status: element)}',
+          style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold))
+      );
+    });
+    return l;
+  }
 }

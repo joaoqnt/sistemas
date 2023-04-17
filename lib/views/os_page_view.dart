@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:microsistema/controller/ordemServico_controller.dart';
 import 'package:microsistema/utils/dataformato_util.dart';
 import 'package:microsistema/views/avaliacao_page_view.dart';
+import 'package:microsistema/widgets/textformfield_widget.dart';
 
 //banco de dados sqlite
 class OsPageView extends StatefulWidget {
@@ -13,11 +14,13 @@ class OsPageView extends StatefulWidget {
 
 class _OsPageViewState extends State<OsPageView> {
   OrdemServicoController ordemServicoController = OrdemServicoController();
+  TextFormFieldWidget textFormFieldWidget = TextFormFieldWidget();
+  final _searchFocusNode = FocusNode();
   int position = -1;
 
   @override
   void initState() {
-    //initialize();
+    // initialize();
     super.initState();
   }
 
@@ -53,9 +56,10 @@ class _OsPageViewState extends State<OsPageView> {
                 Expanded(
                   child: TextFormField(
                     controller: ordemServicoController.tecBusca,
+                    focusNode: _searchFocusNode,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
-                      labelText: "Pesquise",
+                      hintText: "Pesquise pelo cliente/OS",
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -83,7 +87,10 @@ class _OsPageViewState extends State<OsPageView> {
                               MaterialPageRoute(
                                   builder: (BuildContext) => AvaliacaoPageView(
                                       ordemServicoController
-                                          .ordemServicoSellected!)));
+                                          .ordemServicoSellected!)
+                              )
+                          );
+                          // _cancelSearch();
                         },
                         child: Container(
                           child: Row(
@@ -99,7 +106,7 @@ class _OsPageViewState extends State<OsPageView> {
                                     constraints: const BoxConstraints(
                                         minHeight: 60, minWidth: 60),
                                     // alignment: AlignmentDirectional.topStart,
-                                    child: Center(
+                                    child: const Center(
                                       child: Icon(Icons.receipt_long)
                                       // Text(""
                                       //     "${DataFormato.getDate(ordemServicoController.ordemservicos[index].data, "dd/MM")}",
@@ -117,7 +124,7 @@ class _OsPageViewState extends State<OsPageView> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "${ordemServicoController.ordemservicos[index].id}",
+                                        "${ordemServicoController.filteredOrdemservicos[index].id}",
                                         style: TextStyle(fontSize: 16),
                                       ),
                                       position != index
@@ -155,7 +162,7 @@ class _OsPageViewState extends State<OsPageView> {
                                 children: [
                                   Text(
                                       "${DataFormato.getDate(
-                                          ordemServicoController.ordemservicos[index].data, "dd/MM")}",
+                                          ordemServicoController.filteredOrdemservicos[index].data, "dd/MM")}",
                                       style: TextStyle(color: Color.fromRGBO(8, 8, 8, 1),)),
                                   IconButton(
                                       onPressed: () {
@@ -176,7 +183,8 @@ class _OsPageViewState extends State<OsPageView> {
                         ),
                       ),
                     );
-                  }))
+                  })
+          )
         ],
       ),
     );
@@ -195,7 +203,15 @@ class _OsPageViewState extends State<OsPageView> {
   }
 
   Future initialize() async {
-    await ordemServicoController.getAllBd();
-    setState(() {});
+    setState(() {
+
+    });
+  }
+
+  void _cancelSearch() {
+    ordemServicoController.tecBusca.clear();
+    _searchFocusNode.unfocus();
+    setState(() {
+    });
   }
 }

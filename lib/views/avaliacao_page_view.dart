@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:microsistema/controller/avaliacao_controller.dart';
 import 'package:microsistema/models/ordemServico.dart';
+import 'package:microsistema/widgets/dropdownbutton_widget.dart';
 import 'package:microsistema/widgets/textformfield_widget.dart';
 
 class AvaliacaoPageView extends StatefulWidget {
@@ -15,17 +16,21 @@ class AvaliacaoPageView extends StatefulWidget {
 class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
   AvaliacaoController avaliacaoController = AvaliacaoController();
   TextFormFieldWidget textformfield = TextFormFieldWidget();
+  DropDownButtonWidget dropDownButtonWidget = DropDownButtonWidget();
+
 
   void initState(){
     init();
+    // _searchFocusNode.unfocus();
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Armadilha"),
+        title: Text("Monitoramento"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -36,6 +41,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Divider(),
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: textformfield.criaTFF(avaliacaoController.tecPontos, "Pontos de Melhoria")
@@ -54,10 +60,10 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                         ),
                       ],
                     ),
-                  ))
-                );
+                  )
+                ));
               },
-              icon: Icon(Icons.info)
+              icon: Icon(Icons.info_outline)
           ),
           IconButton(
             onPressed : avaliacaoController.armadilhaSelected == null ? null : () async{
@@ -81,15 +87,19 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                 Navigator.of(context).pop();
               });
             },
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.save_outlined),
           ),
         ],
       ),
       body: Column(
         children: [
           Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // dropDownButtonWidget.criaDDB(
+              //     avaliacaoController.departamentoSelected,
+              //     widget.ordemSelected.departamentos!,
+              //     tipo:'N'),
               DropdownButton(
                   value: avaliacaoController.departamentoSelected,
                   items: widget.ordemSelected.departamentos!.map((e) {
@@ -98,13 +108,13 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                       child: Text('${e.nome}'),
                     );
                   }).toList(),
-                  onChanged: (value) async {
+                  onChanged:(value) async{
                     avaliacaoController.departamentoSelected = value;
                     avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
                     avaliacaoController.filterArmadilhasByStatus(status: "Todos");
                     print(avaliacaoController.departamentoSelected);
                     setState(() {
-                      listWidget();
+                      avaliacaoController.listWidget();
                     });
                   },
               ),
@@ -158,7 +168,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: Text(
-                              "Armadilha ${avaliacaoController.armadilhasFiltered![index].nome}",
+                              "PRM ${avaliacaoController.armadilhasFiltered![index].nome}",
                               style: TextStyle(color: Colors.black,fontSize: 16),
                             ),
                           ),
@@ -200,7 +210,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                 constraints: BoxConstraints(minHeight: 35),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: listWidget(),
+                  children: avaliacaoController.listWidget(),
                 ),
               ),
             ),
@@ -208,39 +218,58 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                showDialog(context: context, builder: (context) =>
                    AlertDialog(
                      title: Text("Legenda"),
-                     actions: [
-                       Padding(
-                         padding: const EdgeInsets.all(20.0),
-                         child: Column(
-                             //mainAxisAlignment: MainAxisAlignment.start,
-                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: const [
-                               Text("R = Isca Roida"),
-                               Text("D = Isca Danificada"),
-                               Text("A = Armadilha Adesiva Danificada"),
-                               Text("C = Roedor Capturado na Adesiva"),
-                               Text("X = Sem Necessidade de Reposição"),
-                               Text("P = Porca Isca Ausente"),
-                               Text("B = PRM Bloqueado"),
-                               Text("K = PRM Quebrado")
-                             ]),
-                       )
-                     ],
+                     content: SingleChildScrollView(
+                       child: Column(
+                         //mainAxisAlignment: MainAxisAlignment.start,
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: const [
+                             Divider(),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("R = Isca Roida"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("D = Isca Danificada"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("A = Armadilha Adesiva Danificada"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("C = Roedor Capturado na Adesiva"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("X = Sem Necessidade de Reposição"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("P = Porca Isca Ausente"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("B = PRM Bloqueado"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("K = PRM Quebrado"),
+                             )
+                           ]),
+                     ),
+                     // actions: [
+                     //   Padding(
+                     //     padding: const EdgeInsets.all(20.0),
+                     //
+                     //   )
+                     //],
                ));
             },
           )
         ],
       ),
     );
-  }
-  List<Widget> listWidget(){
-    List<Widget> l = [];
-    avaliacaoController.listStatus.forEach((element) {
-      l.add(Text('$element:''${avaliacaoController.contaArmadilha(status: element)}',
-          style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold))
-      );
-    });
-    return l;
   }
 
   Future init() async{
