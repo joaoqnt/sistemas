@@ -100,23 +100,26 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
               //     avaliacaoController.departamentoSelected,
               //     widget.ordemSelected.departamentos!,
               //     tipo:'N'),
-              DropdownButton(
-                  value: avaliacaoController.departamentoSelected,
-                  items: widget.ordemSelected.departamentos!.map((e) {
-                    return DropdownMenuItem(
-                      value: e,
-                      child: Text('${e.nome}'),
-                    );
-                  }).toList(),
-                  onChanged:(value) async{
-                    avaliacaoController.departamentoSelected = value;
-                    avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
-                    avaliacaoController.filterArmadilhasByStatus(status: "Todos");
-                    print(avaliacaoController.departamentoSelected);
-                    setState(() {
-                      avaliacaoController.listWidget();
-                    });
-                  },
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DropdownButton(
+                    value: avaliacaoController.departamentoSelected,
+                    items: widget.ordemSelected.departamentos!.map((e) {
+                      return DropdownMenuItem(
+                        value: e,
+                        child: Text('${e.nome}'),
+                      );
+                    }).toList(),
+                    onChanged:(value) async{
+                      avaliacaoController.departamentoSelected = value;
+                      avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
+                      avaliacaoController.filterArmadilhasByStatus(status: "Todos");
+                      print(avaliacaoController.departamentoSelected);
+                      setState(() {
+                        avaliacaoController.listWidget();
+                      });
+                    },
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0),
