@@ -20,7 +20,6 @@ class _OsPageViewState extends State<OsPageView> {
 
   @override
   void initState() {
-    // initialize();
     super.initState();
   }
 
@@ -32,7 +31,7 @@ class _OsPageViewState extends State<OsPageView> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: Icon(Icons.refresh_outlined),
             onPressed: () async {
               showDialog(
                   context: context,
@@ -42,6 +41,7 @@ class _OsPageViewState extends State<OsPageView> {
               await sincronize();
               Navigator.of(context).pop();
               print(ordemServicoController.filteredOrdemservicos);
+              _cancelSearch();
             },
           )
         ],
@@ -79,6 +79,7 @@ class _OsPageViewState extends State<OsPageView> {
                     return Card(
                       child: InkWell(
                         onTap: () {
+                          _cancelSearch();
                           ordemServicoController.ordemServicoSellected =
                               ordemServicoController
                                   .filteredOrdemservicos[index];
@@ -88,13 +89,12 @@ class _OsPageViewState extends State<OsPageView> {
                                   builder: (BuildContext) => AvaliacaoPageView(
                                       ordemServicoController
                                           .ordemServicoSellected!)
-                              )
+                              ),
+
                           );
-                          // _cancelSearch();
                         },
                         child: Container(
                           child: Row(
-                            //crossAxisAlignment: position != index ? CrossAxisAlignment.center : CrossAxisAlignment.start,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -105,14 +105,8 @@ class _OsPageViewState extends State<OsPageView> {
                                         Color.fromRGBO(248, 246, 247, 100)),
                                     constraints: const BoxConstraints(
                                         minHeight: 60, minWidth: 60),
-                                    // alignment: AlignmentDirectional.topStart,
                                     child: const Center(
                                       child: Icon(Icons.receipt_long)
-                                      // Text(""
-                                      //     "${DataFormato.getDate(ordemServicoController.ordemservicos[index].data, "dd/MM")}",
-                                      //     style:
-                                      //         TextStyle(color: Colors.lightBlue)
-                                      // ),
                                     )
                                 ),
                               ),
@@ -127,8 +121,7 @@ class _OsPageViewState extends State<OsPageView> {
                                         "${ordemServicoController.filteredOrdemservicos[index].id}",
                                         style: TextStyle(fontSize: 16),
                                       ),
-                                      position != index
-                                          ? Container() : Column(
+                                      Column(
                                         children: [
                                           Row(
                                             children: [
@@ -160,22 +153,13 @@ class _OsPageViewState extends State<OsPageView> {
                               ),
                               Column(
                                 children: [
-                                  Text(
-                                      "${DataFormato.getDate(
-                                          ordemServicoController.filteredOrdemservicos[index].data, "dd/MM")}",
-                                      style: TextStyle(color: Color.fromRGBO(8, 8, 8, 1),)),
-                                  IconButton(
-                                      onPressed: () {
-                                        if(position == index){
-                                          position = -1;
-                                        }else{
-                                          position = index;
-                                        }
-                                        setState(() {
-                                          print(position);
-                                        });
-                                      },
-                                      icon: position == index ? Icon(Icons.expand_less) : Icon(Icons.expand_more)),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                        "${DataFormato.getDate(
+                                            ordemServicoController.filteredOrdemservicos[index].data, "dd/MM")}",
+                                        style: TextStyle(color: Color.fromRGBO(8, 8, 8, 1),)),
+                                  ),
                                 ],
                               )
                             ],
@@ -202,16 +186,7 @@ class _OsPageViewState extends State<OsPageView> {
     setState(() {});
   }
 
-  Future initialize() async {
-    setState(() {
-
-    });
-  }
-
   void _cancelSearch() {
-    ordemServicoController.tecBusca.clear();
-    _searchFocusNode.unfocus();
-    setState(() {
-    });
+    FocusScope.of(context).requestFocus(FocusNode());
   }
 }

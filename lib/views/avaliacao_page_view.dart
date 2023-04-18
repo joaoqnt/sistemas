@@ -30,18 +30,19 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Monitoramento"),
+        title: Text("Controle"),
         centerTitle: true,
         actions: [
           IconButton(
               onPressed: (){
                 showDialog(context: context, builder: (context) => AlertDialog(
-                  title: Text('Monitoramento'),
+                  // title: Text('Monitoramento'),
                   content: SingleChildScrollView(
+                    // scrollDirection: Axis.vertical,
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                      // mainAxisSize: MainAxisSize.min,
                       children: [
-                        Divider(),
+                        //Divider(),
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: textformfield.criaTFF(avaliacaoController.tecPontos, "Pontos de Melhoria")
@@ -58,6 +59,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                           padding: EdgeInsets.all(8.0),
                           child: textformfield.criaTFF(avaliacaoController.tecComent, "Comentário da Contratante")
                         ),
+                        //Divider()
                       ],
                     ),
                   )
@@ -93,37 +95,38 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
       ),
       body: Column(
         children: [
-          Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // dropDownButtonWidget.criaDDB(
-              //     avaliacaoController.departamentoSelected,
-              //     widget.ordemSelected.departamentos!,
-              //     tipo:'N'),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DropdownButton(
+          Container(
+           // margin: EdgeInsets.all(8),
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              // color: Colors.grey.shade100
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: DropdownButton(
+                    isExpanded: true,
                     value: avaliacaoController.departamentoSelected,
+                    hint: Text("Área Programada"),
                     items: widget.ordemSelected.departamentos!.map((e) {
-                      return DropdownMenuItem(
-                        value: e,
-                        child: Text('${e.nome}'),
-                      );
-                    }).toList(),
-                    onChanged:(value) async{
-                      avaliacaoController.departamentoSelected = value;
-                      avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
-                      avaliacaoController.filterArmadilhasByStatus(status: "Todos");
-                      print(avaliacaoController.departamentoSelected);
-                      setState(() {
-                        avaliacaoController.listWidget();
-                      });
-                    },
+                        return DropdownMenuItem(
+                          value: e,
+                          child: Text('${e.nome}'),
+                        );
+                      }).toList(),
+                      onChanged:(value) async{
+                        avaliacaoController.departamentoSelected = value;
+                        avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
+                        avaliacaoController.filterArmadilhasByStatus(status: "Todos");
+                        print(avaliacaoController.departamentoSelected);
+                        setState(() {
+                          avaliacaoController.listWidget();
+                        });
+                      },
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: DropdownButton(
+                DropdownButton(
                   //key: ,
                     value: avaliacaoController.statusSelected, //mapStatus[index],
                     items: avaliacaoController.listStatusFilter.map((e) {
@@ -138,14 +141,14 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                       setState(() {
                         print(avaliacaoController.armadilhasFiltered);
                       });
-                    }),
-              )
-            ],
+                    })
+              ],
+            ),
           ),
           Expanded(
               child: avaliacaoController.departamentoSelected == null ? Container() :
               ListView.builder(
-                itemCount: avaliacaoController.armadilhasFiltered!.length,
+                itemCount: avaliacaoController.armadilhasFiltered.length,
                 itemBuilder: (context, index) {
                   return Card(
                     child: Row(
@@ -157,7 +160,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                               Container(
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Color.fromRGBO(248, 246, 247, 100),
+                                    color: Colors.grey.shade50,
                                   ),
                                   constraints: const BoxConstraints(minHeight: 60, minWidth: 60),
                                   child: Center(
@@ -171,8 +174,8 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: Text(
-                              "PRM ${avaliacaoController.armadilhasFiltered![index].nome}",
-                              style: TextStyle(color: Colors.black,fontSize: 16),
+                              "PRM ${avaliacaoController.armadilhasFiltered[index].nome}",
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ),
@@ -180,7 +183,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                           padding: const EdgeInsets.only(right: 8.0),
                           child: DropdownButton(
                             //key: ,
-                              value: avaliacaoController.armadilhasFiltered![index].status, //mapStatus[index],
+                              value: avaliacaoController.armadilhasFiltered[index].status, //mapStatus[index],
                               items: avaliacaoController.listStatus.map((e) {
                                 return DropdownMenuItem(
                                     value: e,
@@ -188,8 +191,8 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                                 );
                               }).toList(),
                               onChanged: (value){
-                                avaliacaoController.armadilhasFiltered![index].status = value.toString();
-                                avaliacaoController.armadilhaSelected = avaliacaoController.armadilhasFiltered![index];
+                                avaliacaoController.armadilhasFiltered[index].status = value.toString();
+                                avaliacaoController.armadilhaSelected = avaliacaoController.armadilhasFiltered[index];
                                 avaliacaoController.armadilhaSelected!.pendente ='S';
                                 avaliacaoController.statusSelected != "Todos"?
                                 avaliacaoController.filterArmadilhasByStatus(status: value.toString()) :
@@ -229,27 +232,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                              Divider(),
                              Padding(
                                padding: EdgeInsets.all(8.0),
-                               child: Text("R = Isca Roida"),
-                             ),
-                             Padding(
-                               padding: EdgeInsets.all(8.0),
-                               child: Text("D = Isca Danificada"),
-                             ),
-                             Padding(
-                               padding: EdgeInsets.all(8.0),
                                child: Text("A = Armadilha Adesiva Danificada"),
-                             ),
-                             Padding(
-                               padding: EdgeInsets.all(8.0),
-                               child: Text("C = Roedor Capturado na Adesiva"),
-                             ),
-                             Padding(
-                               padding: EdgeInsets.all(8.0),
-                               child: Text("X = Sem Necessidade de Reposição"),
-                             ),
-                             Padding(
-                               padding: EdgeInsets.all(8.0),
-                               child: Text("P = Porca Isca Ausente"),
                              ),
                              Padding(
                                padding: EdgeInsets.all(8.0),
@@ -257,16 +240,31 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                              ),
                              Padding(
                                padding: EdgeInsets.all(8.0),
-                               child: Text("K = PRM Quebrado"),
-                             )
-                           ]),
+                               child: Text("C = Roedor Capturado na Adesiva"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("D = Isca Danificada"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("K = PRM Quebrado")
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("P = Porca Isca Ausente"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("R = Isca Roida"),
+                             ),
+                             Padding(
+                               padding: EdgeInsets.all(8.0),
+                               child: Text("X = Sem Necessidade de Reposição"),
+                             ),
+                           ]
+                       ),
                      ),
-                     // actions: [
-                     //   Padding(
-                     //     padding: const EdgeInsets.all(20.0),
-                     //
-                     //   )
-                     //],
                ));
             },
           )
