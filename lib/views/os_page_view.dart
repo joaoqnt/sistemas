@@ -99,10 +99,10 @@ class _OsPageViewState extends State<OsPageView> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color:
-                                        Color.fromRGBO(248, 246, 247, 100)),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.grey.shade50,
+                                    ),
                                     constraints: const BoxConstraints(
                                         minHeight: 60, minWidth: 60),
                                     child: const Center(
