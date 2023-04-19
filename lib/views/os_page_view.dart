@@ -22,7 +22,7 @@ class _OsPageViewState extends State<OsPageView> {
   void initState() {
     super.initState();
   }
-
+// atualizar e fechar a os mesmo estando offline
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,8 +105,10 @@ class _OsPageViewState extends State<OsPageView> {
                                     ),
                                     constraints: const BoxConstraints(
                                         minHeight: 60, minWidth: 60),
-                                    child: const Center(
-                                      child: Icon(Icons.receipt_long)
+                                    child: Center(
+                                      child: Text(
+                                          "${ordemServicoController.filteredOrdemservicos[index].data}",
+                                          style: TextStyle(color: Color.fromRGBO(8, 8, 8, 1),)),
                                     )
                                 ),
                               ),
@@ -121,30 +123,26 @@ class _OsPageViewState extends State<OsPageView> {
                                         "${ordemServicoController.filteredOrdemservicos[index].id}",
                                         style: TextStyle(fontSize: 16),
                                       ),
-                                      Column(
+                                      Row(
                                         children: [
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.person,
-                                                size: 12,
-                                                color: Colors.grey,
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      left: 8.0),
-                                                  child: Text(
-                                                      "${ordemServicoController
-                                                          .filteredOrdemservicos[index]
-                                                          .nomeCli}",
-                                                      style: const TextStyle(
-                                                          fontSize: 15,
-                                                          color: Colors.grey)),
-                                                )
-                                              )
-                                            ],
+                                          const Icon(
+                                            Icons.person,
+                                            size: 12,
+                                            color: Colors.grey,
                                           ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Text(
+                                                  "${ordemServicoController
+                                                      .filteredOrdemservicos[index]
+                                                      .nomeCli}",
+                                                  style: const TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.grey)),
+                                            )
+                                          )
                                         ],
                                       )
                                     ],
@@ -152,13 +150,73 @@ class _OsPageViewState extends State<OsPageView> {
                                 ),
                               ),
                               Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                        "${DataFormato.getDate(
-                                            ordemServicoController.filteredOrdemservicos[index].data, "dd/MM")}",
-                                        style: TextStyle(color: Color.fromRGBO(8, 8, 8, 1),)),
+                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                // mainAxisAlignment: MainAxisAlignment.start,
+                                children: [Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: Text("${ordemServicoController.filteredOrdemservicos[index].situacao}",
+                                          style:TextStyle(color: ordemServicoController.filteredOrdemservicos[index].situacao == 'CONCLUIDO'
+                                              ? Colors.green : Colors.orange )),
+                                    )
+                                  ],
+                                ),
+                                  ordemServicoController.filteredOrdemservicos[index].situacao == 'CONCLUIDO' ?
+                                  Container() :
+                                  InkWell(
+                                      onTap: () async {
+                                        ordemServicoController.verificaStatus(ordemServicoController.filteredOrdemservicos[index]);
+                                        print(ordemServicoController.filteredOrdemservicos[index]);
+                                        showDialog(context: context, builder: (context) => AlertDialog(
+                                            title: Text("Finalizar"),
+                                            content: SingleChildScrollView(
+                                              child: Column(
+                                                children: [
+                                                  Divider(),
+                                                  ordemServicoController.valido == true ?
+                                                  Text("Ao salvar, essa OS será marcada como concluida.") : Text("Preencha todas as Armadilhas"),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: ElevatedButton(
+                                                          onPressed: (){
+                                                            Navigator.pop(context);
+                                                          },
+                                                          child: Text("Cancelar"),
+                                                          style: ElevatedButton.styleFrom(
+                                                              primary: Colors.red
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      ordemServicoController.valido != true ? Container() :
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: ElevatedButton(
+                                                            onPressed: () async{
+                                                              print(ordemServicoController.filteredOrdemservicos[index]);
+                                                              ordemServicoController.filteredOrdemservicos[index].pendente = true;
+                                                              await ordemServicoController.updateSituacaoOrdem(os: ordemServicoController.filteredOrdemservicos[index]);
+                                                              Navigator.pop(context);
+                                                            },
+                                                            child: Text("Salvar"),
+                                                            style: ElevatedButton.styleFrom(
+                                                                primary: Colors.green
+                                                            )),
+                                                      ),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                        ));
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Finalizar",style: TextStyle(fontWeight: FontWeight.bold)),
+                                      )
                                   ),
                                 ],
                               )
@@ -173,13 +231,13 @@ class _OsPageViewState extends State<OsPageView> {
       ),
     );
   }
-
   Future sincronize() async {
     const snackBar = SnackBar(
       content: Text("Erro ao sincronizar, verifique seu sinal de internet!"),
       duration: Duration(seconds: 3),
       backgroundColor: Colors.red,
     );
+    await ordemServicoController.updateSituacaoOrdem(listOs: ordemServicoController.filteredOrdemservicos);
     await ordemServicoController.getAllOs() == true
         ? null
         : ScaffoldMessenger.of(context).showSnackBar(snackBar);

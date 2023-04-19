@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'dart:io';
 import 'package:microsistema/infra/database_infra.dart';
 import 'package:microsistema/models/ordemServico.dart';
 import 'package:microsistema/repositories/armadilha_repository.dart';
@@ -61,5 +63,28 @@ class OrdemServicoRepository {
 
   Future<int> saveOrdem(Map<String,dynamic> ordem, String table) async {
     return await database.insertDataBinding(table, ordem);
+  }
+  Future<bool> updateOrdem(OrdemServico os) async {
+    String armadilhaEncoded = jsonEncode({"1" : [os.toJson()]});
+    print(armadilhaEncoded);
+    var http = Dio();
+    await database.updateData(""
+        "update ordem_servico set situacao = 'CONCLUIDO' "
+        "where id = ${os.id};");
+    os.situacao = 'CONCLUIDO';
+    try{
+      await http.post(
+          'http://mundolivre.dyndns.info:8083/api/v5/json/et2erp/querys/atualiza_situacao',
+          options: Options(headers:{
+            'tenant': 'integrador_41806514000116',
+            HttpHeaders.contentTypeHeader: "application/json",
+          }),
+          data: armadilhaEncoded
+      );
+      return true;
+    }catch(e){
+      os.pendente = true;
+      return false;
+    }
   }
 }

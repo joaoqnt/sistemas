@@ -36,11 +36,8 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
           IconButton(
               onPressed: (){
                 showDialog(context: context, builder: (context) => AlertDialog(
-                  // title: Text('Monitoramento'),
                   content: SingleChildScrollView(
-                    // scrollDirection: Axis.vertical,
                     child: Column(
-                      // mainAxisSize: MainAxisSize.min,
                       children: [
                         //Divider(),
                         Padding(
@@ -59,7 +56,6 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                           padding: EdgeInsets.all(8.0),
                           child: textformfield.criaTFF(avaliacaoController.tecComent, "Comentário da Contratante")
                         ),
-                        //Divider()
                       ],
                     ),
                   )
@@ -85,6 +81,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                     widget.ordemSelected.id!,
                     avaliacaoController.departamentoSelected!.id!
                 ) == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                print(widget.ordemSelected);
                 //print(arm);,
                 Navigator.of(context).pop();
               });
@@ -96,11 +93,9 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
       body: Column(
         children: [
           Container(
-           // margin: EdgeInsets.all(8),
             padding: EdgeInsets.all(8),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              // color: Colors.grey.shade100
+              borderRadius: BorderRadius.circular(15)
             ),
             child: Row(
               children: [

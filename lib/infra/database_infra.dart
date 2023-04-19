@@ -36,7 +36,8 @@ class DatabaseInfra {
             REL_MONITOR       text,
             OBSERVACOES       text,
             COMENTARIOS       text,
-            RESPONSAVEL       INT);
+            RESPONSAVEL       INT,
+            SITUACAO          text);
  ''');
 
     await db.execute('''
