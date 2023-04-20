@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:microsistema/controller/avaliacao_controller.dart';
 import 'package:microsistema/models/ordemServico.dart';
 import 'package:microsistema/widgets/dropdownbutton_widget.dart';
+import 'package:microsistema/widgets/snackbar_widget.dart';
 import 'package:microsistema/widgets/textformfield_widget.dart';
 
 class AvaliacaoPageView extends StatefulWidget {
@@ -17,6 +18,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
   AvaliacaoController avaliacaoController = AvaliacaoController();
   TextFormFieldWidget textformfield = TextFormFieldWidget();
   DropDownButtonWidget dropDownButtonWidget = DropDownButtonWidget();
+  SnackBarWidget snackBarWidget = SnackBarWidget();
 
 
   void initState(){
@@ -64,13 +66,8 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
               icon: Icon(Icons.info_outline)
           ),
           IconButton(
-            onPressed : avaliacaoController.armadilhaSelected == null ? null : () async{
+            onPressed : avaliacaoController.valido == false ? null : () async{
               avaliacaoController.armadilhas.where((element) => element.pendente == 'S').forEach((arm) async{
-                final snackBar = SnackBar(
-                  content: Text("Erro ao salvar, verifique seu sinal de internet!"),
-                  duration:Duration(seconds: 3),
-                  backgroundColor: Colors.red,
-                );
                 showDialog(
                     context: context,
                     builder: (context) {
@@ -80,9 +77,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                     arm,
                     widget.ordemSelected.id!,
                     avaliacaoController.departamentoSelected!.id!
-                ) == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                print(widget.ordemSelected);
-                //print(arm);,
+                ) == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBarWidget.alertaInternet());
                 Navigator.of(context).pop();
               });
             },
@@ -115,6 +110,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                         avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
                         avaliacaoController.filterArmadilhasByStatus(status: "Todos");
                         print(avaliacaoController.departamentoSelected);
+                        avaliacaoController.verificaArmadilhasByDep(avaliacaoController.departamentoSelected!);
                         setState(() {
                           avaliacaoController.listWidget();
                         });
@@ -133,6 +129,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                     onChanged: (value){
                       avaliacaoController.statusSelected = value.toString();
                       avaliacaoController.filterArmadilhasByStatus(status: value.toString());
+                      avaliacaoController.verificaArmadilhasByDep(avaliacaoController.departamentoSelected!);
                       setState(() {
                         print(avaliacaoController.armadilhasFiltered);
                       });

@@ -19,6 +19,7 @@ class AvaliacaoController{
   TextEditingController tecRelat = TextEditingController();
   TextEditingController tecObserv = TextEditingController();
   TextEditingController tecComent = TextEditingController();
+  bool valido = false;
 
 
   Future<List<Departamento>> getAllDep(int os) async{
@@ -37,6 +38,14 @@ class AvaliacaoController{
 
   Future<bool> updateArmadilhas(Armadilha armadilha, int os, int departamento) async{
     return await armadilhaRepository.updateArmadilha(armadilha, os, departamento);
+  }
+
+  bool verificaArmadilhasByDep(Departamento departamento){
+    valido = true;
+    departamento.armadilhas!.where!((element) => element.status == null).forEach((elemento) {
+      valido = false;
+    });
+    return valido!;
   }
 
   filterArmadilhasByStatus({String? status}){

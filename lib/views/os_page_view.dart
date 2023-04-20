@@ -241,7 +241,7 @@ class _OsPageViewState extends State<OsPageView> {
     await ordemServicoController.getAllOs() == true
         ? null
         : ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    setState(() {});
+    setState((){});
   }
 
   void _cancelSearch() {
