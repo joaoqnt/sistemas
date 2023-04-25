@@ -10,6 +10,7 @@ class OrdemServicoController{
   TextEditingController tecBusca = TextEditingController();
   bool? sincronizado;
   bool? valido;
+  bool isOrdered = false;
 
 
   Future<bool> getAllOs() async {
@@ -26,7 +27,11 @@ class OrdemServicoController{
   }
 
   Future getAllBd() async{
-    ordemservicos = await repository.getAllOsBd();
+    try{
+      ordemservicos = await repository.getAllOsBd();
+    }catch(e){
+      print("Erro ao pegar dados do banco de dados $e");
+    }
     filteredOrdemservicos = ordemservicos;
   }
 
@@ -50,5 +55,16 @@ class OrdemServicoController{
       });
     });
     return valido!;
+  }
+
+  void orderBy(){
+    if(!isOrdered){
+      filteredOrdemservicos.sort((OrdemServico b, OrdemServico a)=> a.data!.compareTo(b.data!));
+      isOrdered = true;
+    }
+    else{
+      filteredOrdemservicos.sort((OrdemServico a, OrdemServico b)=> a.data!.compareTo(b.data!));
+      isOrdered = false;
+    }
   }
 }

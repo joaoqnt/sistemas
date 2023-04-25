@@ -109,8 +109,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                         avaliacaoController.departamentoSelected = value;
                         avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
                         avaliacaoController.filterArmadilhasByStatus(status: "Todos");
-                        print(avaliacaoController.departamentoSelected);
-                        avaliacaoController.verificaArmadilhasByDep(avaliacaoController.departamentoSelected!);
+                        print(avaliacaoController.verificaArmadilhasByDep(avaliacaoController.departamentoSelected!));
                         setState(() {
                           avaliacaoController.listWidget();
                         });
@@ -118,8 +117,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                   ),
                 ),
                 DropdownButton(
-                  //key: ,
-                    value: avaliacaoController.statusSelected, //mapStatus[index],
+                    value:avaliacaoController.statusSelected,
                     items: avaliacaoController.listStatusFilter.map((e) {
                       return DropdownMenuItem(
                           value: e,
@@ -129,7 +127,6 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                     onChanged: (value){
                       avaliacaoController.statusSelected = value.toString();
                       avaliacaoController.filterArmadilhasByStatus(status: value.toString());
-                      avaliacaoController.verificaArmadilhasByDep(avaliacaoController.departamentoSelected!);
                       setState(() {
                         print(avaliacaoController.armadilhasFiltered);
                       });
@@ -184,14 +181,11 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                               }).toList(),
                               onChanged: (value){
                                 avaliacaoController.armadilhasFiltered[index].status = value.toString();
-                                avaliacaoController.armadilhaSelected = avaliacaoController.armadilhasFiltered[index];
-                                avaliacaoController.armadilhaSelected!.pendente ='S';
+                                avaliacaoController.armadilhasFiltered[index].pendente = 'S';
                                 avaliacaoController.statusSelected != "Todos"?
-                                avaliacaoController.filterArmadilhasByStatus(status: value.toString()) :
-                                null;
+                                avaliacaoController.filterArmadilhasByStatus(status: value.toString()) : null;
+                                print(avaliacaoController.verificaArmadilhasByDep(avaliacaoController.departamentoSelected!));
                                 setState(() {
-
-                                  print(avaliacaoController.armadilhaSelected);
                                 });
                               }),
                         )
@@ -218,7 +212,6 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                      title: Text("Legenda"),
                      content: SingleChildScrollView(
                        child: Column(
-                         //mainAxisAlignment: MainAxisAlignment.start,
                            crossAxisAlignment: CrossAxisAlignment.start,
                            children: const [
                              Divider(),

@@ -15,11 +15,13 @@ class OsPageView extends StatefulWidget {
 class _OsPageViewState extends State<OsPageView> {
   OrdemServicoController ordemServicoController = OrdemServicoController();
   TextFormFieldWidget textFormFieldWidget = TextFormFieldWidget();
+  DataFormato dataFormato = DataFormato();
   final _searchFocusNode = FocusNode();
   int position = -1;
 
   @override
   void initState() {
+    init();
     super.initState();
   }
 // atualizar e fechar a os mesmo estando offline
@@ -81,16 +83,12 @@ class _OsPageViewState extends State<OsPageView> {
                         onTap: () {
                           _cancelSearch();
                           ordemServicoController.ordemServicoSellected =
-                              ordemServicoController
-                                  .filteredOrdemservicos[index];
+                          ordemServicoController.filteredOrdemservicos[index];
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (BuildContext) => AvaliacaoPageView(
-                                      ordemServicoController
-                                          .ordemServicoSellected!)
-                              ),
-
+                                  builder: (BuildContext) =>
+                                      AvaliacaoPageView(ordemServicoController.ordemServicoSellected!))
                           );
                         },
                         child: Container(
@@ -107,7 +105,7 @@ class _OsPageViewState extends State<OsPageView> {
                                         minHeight: 60, minWidth: 60),
                                     child: Center(
                                       child: Text(
-                                          "${ordemServicoController.filteredOrdemservicos[index].data}",
+                                          "${DataFormato.getDate(ordemServicoController.filteredOrdemservicos[index].data,"dd/MM")}",
                                           style: TextStyle(color: Color.fromRGBO(8, 8, 8, 1),)),
                                     )
                                 ),
@@ -150,15 +148,13 @@ class _OsPageViewState extends State<OsPageView> {
                                 ),
                               ),
                               Column(
-                                // crossAxisAlignment: CrossAxisAlignment.start,
-                                // mainAxisAlignment: MainAxisAlignment.start,
                                 children: [Row(
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.all(8),
                                       child: Text("${ordemServicoController.filteredOrdemservicos[index].situacao}",
                                           style:TextStyle(color: ordemServicoController.filteredOrdemservicos[index].situacao == 'CONCLUIDO'
-                                              ? Colors.green : Colors.orange )),
+                                              ? Colors.green : Colors.deepOrangeAccent )),
                                     )
                                   ],
                                 ),
@@ -167,7 +163,6 @@ class _OsPageViewState extends State<OsPageView> {
                                   InkWell(
                                       onTap: () async {
                                         ordemServicoController.verificaStatus(ordemServicoController.filteredOrdemservicos[index]);
-                                        print(ordemServicoController.filteredOrdemservicos[index]);
                                         showDialog(context: context, builder: (context) => AlertDialog(
                                             title: Text("Finalizar"),
                                             content: SingleChildScrollView(
@@ -196,7 +191,6 @@ class _OsPageViewState extends State<OsPageView> {
                                                         padding: const EdgeInsets.all(8.0),
                                                         child: ElevatedButton(
                                                             onPressed: () async{
-                                                              print(ordemServicoController.filteredOrdemservicos[index]);
                                                               ordemServicoController.filteredOrdemservicos[index].pendente = true;
                                                               await ordemServicoController.updateSituacaoOrdem(os: ordemServicoController.filteredOrdemservicos[index]);
                                                               Navigator.pop(context);
@@ -226,8 +220,16 @@ class _OsPageViewState extends State<OsPageView> {
                       ),
                     );
                   })
-          )
+          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          ordemServicoController.orderBy();
+          setState(() {});
+        },
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.swap_vert_outlined),
       ),
     );
   }
@@ -246,5 +248,12 @@ class _OsPageViewState extends State<OsPageView> {
 
   void _cancelSearch() {
     FocusScope.of(context).requestFocus(FocusNode());
+  }
+
+  Future init() async{
+    await ordemServicoController.getAllBd();
+    print("inicio");
+    setState(() {
+    });
   }
 }

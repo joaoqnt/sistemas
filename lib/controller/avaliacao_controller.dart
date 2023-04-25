@@ -8,7 +8,7 @@ class AvaliacaoController{
   Departamento? departamentoSelected;
   DepartamentoRepository departamentoRepository = DepartamentoRepository();
   List<Departamento> departamentos = [];
-  Armadilha? armadilhaSelected;
+  // Armadilha? armadilhaSelected;
   List<Armadilha> armadilhas = [];
   List<Armadilha> armadilhasFiltered = [];
   ArmadilhaRepository armadilhaRepository = ArmadilhaRepository();
