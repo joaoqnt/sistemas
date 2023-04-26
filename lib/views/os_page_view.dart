@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:microsistema/controller/ordemServico_controller.dart';
 import 'package:microsistema/utils/dataformato_util.dart';
 import 'package:microsistema/views/avaliacao_page_view.dart';
+import 'package:microsistema/widgets/alertdialog_widget.dart';
+import 'package:microsistema/widgets/snackbar_widget.dart';
 import 'package:microsistema/widgets/textformfield_widget.dart';
 
 //banco de dados sqlite
@@ -15,6 +17,8 @@ class OsPageView extends StatefulWidget {
 class _OsPageViewState extends State<OsPageView> {
   OrdemServicoController ordemServicoController = OrdemServicoController();
   TextFormFieldWidget textFormFieldWidget = TextFormFieldWidget();
+  AlertDialogWidget alertDialogWidget = AlertDialogWidget();
+  SnackBarWidget snackBarWidget = SnackBarWidget();
   DataFormato dataFormato = DataFormato();
   final _searchFocusNode = FocusNode();
   int position = -1;
@@ -56,7 +60,8 @@ class _OsPageViewState extends State<OsPageView> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextFormField(
+                  child:
+                  TextFormField(
                     controller: ordemServicoController.tecBusca,
                     focusNode: _searchFocusNode,
                     decoration: InputDecoration(
@@ -163,49 +168,7 @@ class _OsPageViewState extends State<OsPageView> {
                                   InkWell(
                                       onTap: () async {
                                         ordemServicoController.verificaStatus(ordemServicoController.filteredOrdemservicos[index]);
-                                        showDialog(context: context, builder: (context) => AlertDialog(
-                                            title: Text("Finalizar"),
-                                            content: SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  Divider(),
-                                                  ordemServicoController.valido == true ?
-                                                  Text("Ao salvar, essa OS será marcada como concluida.") : Text("Preencha todas as Armadilhas"),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: ElevatedButton(
-                                                          onPressed: (){
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: Text("Cancelar"),
-                                                          style: ElevatedButton.styleFrom(
-                                                              primary: Colors.red
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      ordemServicoController.valido != true ? Container() :
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(8.0),
-                                                        child: ElevatedButton(
-                                                            onPressed: () async{
-                                                              ordemServicoController.filteredOrdemservicos[index].pendente = true;
-                                                              await ordemServicoController.updateSituacaoOrdem(os: ordemServicoController.filteredOrdemservicos[index]);
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: Text("Salvar"),
-                                                            style: ElevatedButton.styleFrom(
-                                                                primary: Colors.green
-                                                            )),
-                                                      ),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                        ));
+                                        alertDialogWidget.ConfirmacaoOs(context, index,ordemServicoController);
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -234,15 +197,11 @@ class _OsPageViewState extends State<OsPageView> {
     );
   }
   Future sincronize() async {
-    const snackBar = SnackBar(
-      content: Text("Erro ao sincronizar, verifique seu sinal de internet!"),
-      duration: Duration(seconds: 3),
-      backgroundColor: Colors.red,
-    );
+
     await ordemServicoController.updateSituacaoOrdem(listOs: ordemServicoController.filteredOrdemservicos);
     await ordemServicoController.getAllOs() == true
         ? null
-        : ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        : ScaffoldMessenger.of(context).showSnackBar(snackBarWidget.snackbar("Erro ao sincronizar, verifique sua internet!"));
     setState((){});
   }
 

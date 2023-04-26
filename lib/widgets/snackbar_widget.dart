@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SnackBarWidget{
-  SnackBar alertaInternet(){
-     const snackBar = SnackBar(
-      content: Text("Erro ao salvar, verifique seu sinal de internet!"),
+  SnackBar snackbar(String text){
+     SnackBar snackBar = SnackBar(
+      content: Text('${text}'),
       duration:Duration(seconds: 3),
       backgroundColor: Colors.red,
     );
      return snackBar;
-    // showDialog(
-    //     context: context,
-    //     builder: (context) {
-    //       return Center(child: CircularProgressIndicator());
-    //     });
   }
 }

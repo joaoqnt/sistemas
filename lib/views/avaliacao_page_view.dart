@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:microsistema/controller/avaliacao_controller.dart';
 import 'package:microsistema/models/ordemServico.dart';
-import 'package:microsistema/widgets/dropdownbutton_widget.dart';
 import 'package:microsistema/widgets/snackbar_widget.dart';
 import 'package:microsistema/widgets/textformfield_widget.dart';
 
@@ -17,7 +16,6 @@ class AvaliacaoPageView extends StatefulWidget {
 class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
   AvaliacaoController avaliacaoController = AvaliacaoController();
   TextFormFieldWidget textformfield = TextFormFieldWidget();
-  DropDownButtonWidget dropDownButtonWidget = DropDownButtonWidget();
   SnackBarWidget snackBarWidget = SnackBarWidget();
 
 
@@ -48,7 +46,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: textformfield.criaTFF(avaliacaoController.tecRelat, "Relatório de Monitoramento")
+                          child: textformfield.criaTFF(avaliacaoController.tecRelat, "Relatório")
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
@@ -56,7 +54,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                         ),
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: textformfield.criaTFF(avaliacaoController.tecComent, "Comentário da Contratante")
+                          child: textformfield.criaTFF(avaliacaoController.tecComent, "Comentário")
                         ),
                       ],
                     ),
@@ -77,7 +75,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                     arm,
                     widget.ordemSelected.id!,
                     avaliacaoController.departamentoSelected!.id!
-                ) == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBarWidget.alertaInternet());
+                ) == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBarWidget.snackbar("Erro ao sincronizar, verifique sua internet!"));
                 Navigator.of(context).pop();
               });
             },
