@@ -198,8 +198,10 @@ class _OsPageViewState extends State<OsPageView> {
   }
   Future sincronize() async {
 
+
     await ordemServicoController.updateSituacaoOrdem(listOs: ordemServicoController.filteredOrdemservicos);
-    await ordemServicoController.getAllOs() == true
+    await ordemServicoController.getAllOs() == true &&
+    await ordemServicoController.saveAllArmadilhasByOs(ordemServicoController.filteredOrdemservicos) == true
         ? null
         : ScaffoldMessenger.of(context).showSnackBar(snackBarWidget.snackbar("Erro ao sincronizar, verifique sua internet!"));
     setState((){});

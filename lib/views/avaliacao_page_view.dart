@@ -75,7 +75,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                     arm,
                     widget.ordemSelected.id!,
                     avaliacaoController.departamentoSelected!.id!
-                ) == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBarWidget.snackbar("Erro ao sincronizar, verifique sua internet!"));
+                ) == true ? null : ScaffoldMessenger.of(context).showSnackBar(snackBarWidget.snackbar("Erro ao salvar, verifique sua internet!"));
                 Navigator.of(context).pop();
               });
             },
@@ -87,9 +87,6 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
         children: [
           Container(
             padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15)
-            ),
             child: Row(
               children: [
                 Expanded(

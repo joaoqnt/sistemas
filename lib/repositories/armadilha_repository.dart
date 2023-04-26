@@ -22,7 +22,7 @@ class ArmadilhaRepository{
   }
 
   Future<bool> updateArmadilha(Armadilha armadilha, int os, int departamento) async{
-    String armadilhaEncoded = jsonEncode({"1" : [armadilha.toJson(os: os)]});
+    String armadilhaEncoded = jsonEncode({"1" : [armadilha.toJson(os: os,departamento: departamento)]});
     var http = Dio();
     var response;
     await database.updateData(""
@@ -40,6 +40,7 @@ class ArmadilhaRepository{
        armadilha.pendente = 'N';
        return true;
     }catch (error){
+      print(armadilha.pendente);
       return false;
     }
   }

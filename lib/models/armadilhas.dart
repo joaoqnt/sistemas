@@ -1,7 +1,6 @@
 class Armadilha {
   int? id;
   String? nome;
-  int? departamento;
   String? status;
   String? pendente;
 
@@ -10,17 +9,16 @@ class Armadilha {
   Armadilha.fromJson(Map<String, dynamic> json) {
     id = json['ID'];
     nome = json['NOME'];
-    departamento = json['DEPARTAMENTO'];
     status = json['STATUS'];
     pendente = json['PENDENTE'];
   }
 
-  Map<String, dynamic> toJson({int? os}) {
+  Map<String, dynamic> toJson({int? os,int? departamento}) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['ID'] = this.id;
     data['NOME'] = this.nome;
     data['OS'] = os;
-    data['DEPARTAMENTO'] = this.departamento;
+    data['DEPARTAMENTO'] = departamento;
     data['STATUS'] = this.status;
     data['PENDENTE'] = this.pendente;
     return data;
@@ -29,6 +27,6 @@ class Armadilha {
   @override
   String toString() {
     // TODO: implement toString
-    return '$id ,"${nome}",$departamento,"${status}","${pendente}"';
+    return '$id ,"${nome}","${status}","${pendente}"';
   }
 }

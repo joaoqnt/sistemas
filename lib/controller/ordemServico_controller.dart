@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:microsistema/controller/avaliacao_controller.dart';
 import 'package:microsistema/models/ordemServico.dart';
 import 'package:microsistema/repositories/ordemServico_repository.dart';
 
@@ -7,11 +8,29 @@ class OrdemServicoController{
   List<OrdemServico> ordemservicos = [];
   List<OrdemServico> filteredOrdemservicos = [];
   OrdemServico? ordemServicoSellected;
+  AvaliacaoController avaliacaoController = AvaliacaoController();
   TextEditingController tecBusca = TextEditingController();
   bool? sincronizado;
   bool? valido;
-  bool isOrdered = false;
+  bool isOrdered = true;
 
+
+  Future<bool> saveAllArmadilhasByOs(List<OrdemServico> listOs) async{
+    bool retorno = true;
+    listOs.where((element) => element.situacao == "CONCLUIDO").forEach((os) {
+      os.departamentos!.forEach((departamento){
+        departamento.armadilhas!.where((arm) => arm.pendente == "S").forEach((armadilha) async {
+          try{
+            await avaliacaoController.updateArmadilhas(armadilha,os.id!,departamento.id!);
+            retorno = true;
+          }catch(e){
+            retorno = false;
+          }
+        });
+      });
+    });
+    return retorno;
+  }
 
   Future<bool> getAllOs() async {
     bool ret = await repository.getAllOsApi();
