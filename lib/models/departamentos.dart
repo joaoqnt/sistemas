@@ -1,10 +1,12 @@
+import 'package:microsistema/models/produtos.dart';
 import 'armadilhas.dart';
 
 class Departamento {
 
   int? id;
   String? nome;
-  List<Armadilha>? armadilhas = [];
+  List<Armadilha> armadilhas = [];
+  List<Produtos> produtos = [];
 
   Departamento({this.id, this.nome});
 

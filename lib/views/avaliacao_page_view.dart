@@ -65,6 +65,10 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
           ),
           IconButton(
             onPressed : avaliacaoController.valido == false ? null : () async{
+              await avaliacaoController.modelProdDep(
+                  widget.ordemSelected.id!,
+                  avaliacaoController.departamentoSelected!.id!,
+                  avaliacaoController.produtosDepartamento);
               avaliacaoController.armadilhas.where((element) => element.pendente == 'S').forEach((arm) async{
                 showDialog(
                     context: context,
@@ -87,46 +91,136 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
         children: [
           Container(
             padding: EdgeInsets.all(8),
-            child: Row(
+            child: Column(
               children: [
-                Expanded(
-                  child: DropdownButton(
-                    isExpanded: true,
-                    value: avaliacaoController.departamentoSelected,
-                    hint: Text("Área Programada"),
-                    items: widget.ordemSelected.departamentos!.map((e) {
-                        return DropdownMenuItem(
-                          value: e,
-                          child: Text('${e.nome}'),
-                        );
-                      }).toList(),
-                      onChanged:(value) async{
-                        avaliacaoController.departamentoSelected = value;
-                        avaliacaoController.armadilhas = avaliacaoController.departamentoSelected!.armadilhas!;
-                        avaliacaoController.filterArmadilhasByStatus(status: "Todos");
-                        print(avaliacaoController.verificaArmadilhasByDep(avaliacaoController.departamentoSelected!));
-                        setState(() {
-                          avaliacaoController.listWidget();
-                        });
-                      },
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButton(
+                        isExpanded: true,
+                        value: avaliacaoController.departamentoSelected,
+                        hint: Text("Área Programada"),
+                        items: widget.ordemSelected.departamentos!.map((e) {
+                            return DropdownMenuItem(
+                              value: e,
+                              child: Text('${e.nome}'),
+                            );
+                          }).toList(),
+                          onChanged:(value) async{
+                            avaliacaoController.onChangeDepartamento(value);
+                            avaliacaoController.addProdutoDepartamento();
+                            print(avaliacaoController.departamentoSelected!.produtos);
+                            setState(() {
+                              avaliacaoController.listWidget();
+                            });
+                          },
+                      ),
+                    ),
+                    DropdownButton(
+                        value:avaliacaoController.statusSelected,
+                        items: avaliacaoController.listStatusFilter.map((e) {
+                          return DropdownMenuItem(
+                              value: e,
+                              child: Text(e)
+                          );
+                        }).toList(),
+                        onChanged: (value){
+                          avaliacaoController.statusSelected = value.toString();
+                          avaliacaoController.filterArmadilhasByStatus(status: value.toString());
+                          setState(() {
+                            print(avaliacaoController.armadilhasFiltered);
+                          });
+                        })
+                  ],
                 ),
-                DropdownButton(
-                    value:avaliacaoController.statusSelected,
-                    items: avaliacaoController.listStatusFilter.map((e) {
-                      return DropdownMenuItem(
-                          value: e,
-                          child: Text(e)
-                      );
-                    }).toList(),
-                    onChanged: (value){
-                      avaliacaoController.statusSelected = value.toString();
-                      avaliacaoController.filterArmadilhasByStatus(status: value.toString());
-                      setState(() {
-                        print(avaliacaoController.armadilhasFiltered);
-                      });
-                    })
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButton(
+                          hint:Text('Produtos'),
+                          isExpanded: true,
+                          value:avaliacaoController.produtoSelected,
+                          items: avaliacaoController.produtos.map((e) {
+                            return DropdownMenuItem(
+                                value: e,
+                                child: Text('${e.nomeComercial}')
+                            );
+                          }).toList(),
+                          onChanged: (value){
+                            avaliacaoController.produtoSelected = value;
+                            setState(() {
+                            });
+                          }),
+                    ),
+                    SizedBox(
+                        width: 60,
+                        height: 33,
+                        child: TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: avaliacaoController.tecQuantidade,
+                          onChanged: (value) {
+                            avaliacaoController.produtoSelected == null ? null : avaliacaoController.produtoSelected!.quantidade = double.tryParse(value);
+                          },
+                        )),
+                    IconButton(
+                        onPressed: avaliacaoController.verificaProdutoDepartamento == false ? null :(){
+                          avaliacaoController.addList();
+                          _cancelSearch();
+                          setState(() {
+
+                          });
+                        },
+                        icon: Icon(Icons.add)),
+                  ])
               ],
+            ),
+          ),
+          avaliacaoController.produtosDepartamento.isEmpty ? Container() : SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                //height: MediaQuery.of(context).size.height * 0.2,
+                constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.2),
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: avaliacaoController.produtosDepartamento.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Produto",style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text("${avaliacaoController.produtosDepartamento[index].nomeComercial}")
+                                  ],
+                                )
+                              ),
+                            ),
+                            Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Column(
+                                  children: [
+                                    Text("Quantidade",style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text('${avaliacaoController.produtosDepartamento[index].quantidade}')
+                                  ],
+                                )
+                            ),
+                            IconButton(
+                                onPressed: (){
+                                  avaliacaoController.removeList(index);
+                                  setState(() {
+                                  });
+                                },
+                                icon: Icon(Icons.delete))
+                          ],
+                        ),
+                      );
+                    }),
+              ),
             ),
           ),
           Expanded(
@@ -175,11 +269,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                                 );
                               }).toList(),
                               onChanged: (value){
-                                avaliacaoController.armadilhasFiltered[index].status = value.toString();
-                                avaliacaoController.armadilhasFiltered[index].pendente = 'S';
-                                avaliacaoController.statusSelected != "Todos"?
-                                avaliacaoController.filterArmadilhasByStatus(status: value.toString()) : null;
-                                print(avaliacaoController.verificaArmadilhasByDep(avaliacaoController.departamentoSelected!));
+                                avaliacaoController.filter(value, index);
                                 setState(() {
                                 });
                               }),
@@ -252,8 +342,12 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
       ),
     );
   }
+  void _cancelSearch() {
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
 
   Future init() async{
+    await avaliacaoController.getAllProd();
     await avaliacaoController.getAllDep(widget.ordemSelected.id!);
     setState(() {
     });

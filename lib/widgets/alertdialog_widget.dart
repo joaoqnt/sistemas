@@ -8,7 +8,6 @@ class AlertDialogWidget{
         content: SingleChildScrollView(
           child: Column(
             children: [
-              Divider(),
               ordemServicoController.valido == true ?
               Text("Ao salvar, essa OS será marcada como concluida.") : Text("Preencha todas as Armadilhas"),
               Row(

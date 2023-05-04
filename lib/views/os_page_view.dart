@@ -153,26 +153,36 @@ class _OsPageViewState extends State<OsPageView> {
                                 ),
                               ),
                               Column(
-                                children: [Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Text("${ordemServicoController.filteredOrdemservicos[index].situacao}",
-                                          style:TextStyle(color: ordemServicoController.filteredOrdemservicos[index].situacao == 'CONCLUIDO'
-                                              ? Colors.green : Colors.deepOrangeAccent )),
-                                    )
-                                  ],
-                                ),
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          constraints: BoxConstraints(minWidth: 20,minHeight: 10),
+                                          decoration: BoxDecoration(color: ordemServicoController.filteredOrdemservicos[index].situacao == 'CONCLUIDO'
+                                              ? Colors.green : Colors.orange,shape: BoxShape.circle ),
+                                          child: Text("${ordemServicoController.filteredOrdemservicos[index].situacao == "CONCLUIDO" ? "C" : "P"}",
+                                              style:TextStyle(color: Colors.white)),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                   ordemServicoController.filteredOrdemservicos[index].situacao == 'CONCLUIDO' ?
                                   Container() :
                                   InkWell(
-                                      onTap: () async {
+                                      onTap: () {
                                         ordemServicoController.verificaStatus(ordemServicoController.filteredOrdemservicos[index]);
                                         alertDialogWidget.ConfirmacaoOs(context, index,ordemServicoController);
                                       },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Finalizar",style: TextStyle(fontWeight: FontWeight.bold)),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text("Finalizar",
+                                            style: TextStyle(
+                                                decoration: TextDecoration.underline,
+                                                color: Colors.blue)),
                                       )
                                   ),
                                 ],
@@ -197,11 +207,9 @@ class _OsPageViewState extends State<OsPageView> {
     );
   }
   Future sincronize() async {
-
-
+    await ordemServicoController.saveAllArmadilhasByOs(ordemServicoController.filteredOrdemservicos);
     await ordemServicoController.updateSituacaoOrdem(listOs: ordemServicoController.filteredOrdemservicos);
-    await ordemServicoController.getAllOs() == true &&
-    await ordemServicoController.saveAllArmadilhasByOs(ordemServicoController.filteredOrdemservicos) == true
+    await ordemServicoController.getAllOs() == true
         ? null
         : ScaffoldMessenger.of(context).showSnackBar(snackBarWidget.snackbar("Erro ao sincronizar, verifique sua internet!"));
     setState((){});

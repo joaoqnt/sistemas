@@ -41,6 +41,24 @@ class DatabaseInfra {
  ''');
 
     await db.execute('''
+      CREATE TABLE "PRODUTOS" (
+        ID    INT primary key,
+        QUANTIDADE      REAL,
+        NOME_QUIMICO    text,
+        NOME_COMERCIAL  text);
+        ''');
+
+    await db.execute('''
+      CREATE TABLE "PRODUTOS_DEPARTAMENTO" (
+        ID    INT,
+        OS    INT,
+        DEPARTAMENTO INT,
+        PRODUTO      INT,
+        QUANTIDADE   REAL,
+        PRIMARY KEY (ID, OS, DEPARTAMENTO,PRODUTO));
+        ''');
+
+    await db.execute('''
       CREATE TABLE "DEPARTAMENTOS" (
         ID    INT,
         OS    INT,

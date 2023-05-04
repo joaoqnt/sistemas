@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:microsistema/models/armadilhas.dart';
 import 'package:microsistema/models/departamentos.dart';
+import 'package:microsistema/models/produtos.dart';
 import 'package:microsistema/repositories/armadilha_repository.dart';
 import 'package:microsistema/repositories/departamento_repository.dart';
+import 'package:microsistema/repositories/produto_repository.dart';
 
 class AvaliacaoController{
   Departamento? departamentoSelected;
@@ -11,6 +13,11 @@ class AvaliacaoController{
   // Armadilha? armadilhaSelected;
   List<Armadilha> armadilhas = [];
   List<Armadilha> armadilhasFiltered = [];
+  List<Produtos> produtos = [];
+  List<Produtos> produtosDepartamento = [];
+  Map<String,dynamic> modelo = <String,dynamic>{};
+  Produtos? produtoSelected;
+  ProdutoRepository produtoRepository = ProdutoRepository();
   ArmadilhaRepository armadilhaRepository = ArmadilhaRepository();
   String statusSelected = "Todos";
   List<String> listStatus = ['A', 'B', 'C', 'D', 'K','P','R','X'];
@@ -19,6 +26,7 @@ class AvaliacaoController{
   TextEditingController tecRelat = TextEditingController();
   TextEditingController tecObserv = TextEditingController();
   TextEditingController tecComent = TextEditingController();
+  TextEditingController tecQuantidade = TextEditingController(text: '1');
   bool valido = false;
 
 
@@ -27,9 +35,62 @@ class AvaliacaoController{
     return departamentos;
   }
 
+
+  void addProdutoDepartamento(){
+    departamentoSelected!.produtos.forEach((element) {
+      produtos.where((produto) => produto.id == element.id).forEach((elemento) {
+        element.nomeComercial = elemento.nomeComercial;
+        element.nomeQuimico = elemento.nomeQuimico;
+      });
+    });
+  }
+
+  onChangeDepartamento(Departamento? value){
+    departamentoSelected = value;
+    armadilhas = departamentoSelected!.armadilhas;
+    produtosDepartamento = departamentoSelected!.produtos;
+    filterArmadilhasByStatus(status: "Todos");
+    verificaArmadilhasByDep(departamentoSelected!);
+    produtosDepartamento = departamentoSelected!.produtos;
+  }
+
+  bool verificaProdutoDepartamento(){
+    bool retorno = true;
+    produtosDepartamento.length >= 15 || produtoSelected == null ||
+        departamentoSelected == null || tecQuantidade.text.isEmpty ||
+        tecQuantidade.text == '0' ? retorno = false : retorno = true;
+    return retorno;
+  }
+
+  addList(){
+    produtoSelected!.quantidade = double.tryParse(tecQuantidade.text);
+    produtosDepartamento.add(produtoSelected!);
+    produtos.remove(produtoSelected!);
+    produtoSelected = null;
+  }
+
+  removeList(int index){
+    produtos.add(produtosDepartamento[index]);
+    produtosDepartamento.removeAt(index);
+    produtos.sort((a,b)=> a.nomeComercial!.compareTo(b.nomeComercial!));
+  }
+
   Future<List<Armadilha>> getAllArm(int os, int departamento) async {
     armadilhas = await armadilhaRepository.getAllArm(os, departamento);
     return armadilhas;
+  }
+
+  Future<List<Produtos>> getAllProd() async{
+    produtos = await produtoRepository.getAllProd();
+    return produtos;
+  }
+
+  Future deleteProd(int os, int departamento, int produto) async{
+    await produtoRepository.cleanTable('produtos_departamento', os, departamento, produto);
+  }
+
+  Future getAllProdByDep(int os, int dep) async{
+    produtosDepartamento = await produtoRepository.getAllProdByDep(os, dep);
   }
 
   int contaArmadilha({String? status}){
@@ -40,23 +101,52 @@ class AvaliacaoController{
     return await armadilhaRepository.updateArmadilha(armadilha, os, departamento);
   }
 
+  Future modelProdDep(int os,int departamento,List<Produtos> listproduto) async{
+    int index = 0;
+    while(index < listproduto.length){
+      listproduto.forEach((element) {
+        deleteProd(os, departamento,element.id!);
+        index++;
+        Map<String,dynamic> modelo = {
+          'ID':index,
+          'OS':os,
+          'DEPARTAMENTO':departamento,
+          'PRODUTO':element.id,
+          'QUANTIDADE':element.quantidade
+        };
+        print(modelo);
+        saveData(modelo, 'produtos_departamento');
+      });
+    }
+  }
+
   bool verificaArmadilhasByDep(Departamento departamento){
     valido = true;
-    departamento.armadilhas!.where!((element) => element.status == null).forEach((elemento) {
+    departamento.armadilhas.where((element) => element.status == null).forEach((elemento) {
       valido = false;
     });
-    return valido!;
+    return valido;
   }
 
   filterArmadilhasByStatus({String? status}){
     if(status!.toLowerCase() != "Todos".toLowerCase()){
       statusSelected = status;
-      armadilhasFiltered = departamentoSelected!.armadilhas!.where((element) => element.status == status).toList();
+      armadilhasFiltered = departamentoSelected!.armadilhas.where((element) => element.status == status).toList();
     }else{
-      armadilhasFiltered = departamentoSelected!.armadilhas!;
+      armadilhasFiltered = departamentoSelected!.armadilhas;
     }
   }
 
+  filter(dynamic value, int index){
+    armadilhasFiltered[index].status = value.toString();
+    armadilhasFiltered[index].pendente = 'S';
+    statusSelected != "Todos"?
+    filterArmadilhasByStatus(status: value.toString()) : null;
+    verificaArmadilhasByDep(departamentoSelected!);
+  }
+  Future saveData(produto,table) async{
+    await produtoRepository.saveProduto(produto, table);
+  }
 
   List<Widget> listWidget(){
     List<Widget> l = [];
