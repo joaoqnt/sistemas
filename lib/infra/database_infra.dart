@@ -55,6 +55,7 @@ class DatabaseInfra {
         DEPARTAMENTO INT,
         PRODUTO      INT,
         QUANTIDADE   REAL,
+        PENDENTE text,
         PRIMARY KEY (ID, OS, DEPARTAMENTO,PRODUTO));
         ''');
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:microsistema/controller/avaliacao_controller.dart';
 import 'package:microsistema/models/ordemServico.dart';
+import 'package:microsistema/views/infos_page_view.dart';
 import 'package:microsistema/widgets/snackbar_widget.dart';
 import 'package:microsistema/widgets/textformfield_widget.dart';
 
@@ -34,32 +35,15 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: (){
-                showDialog(context: context, builder: (context) => AlertDialog(
-                  content: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        //Divider(),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: textformfield.criaTFF(avaliacaoController.tecPontos, "Pontos de Melhoria")
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: textformfield.criaTFF(avaliacaoController.tecRelat, "Relatório")
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: textformfield.criaTFF(avaliacaoController.tecObserv, "Observações")
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: textformfield.criaTFF(avaliacaoController.tecComent, "Comentário")
-                        ),
-                      ],
-                    ),
-                  )
-                ));
+              onPressed: avaliacaoController.checkDep () == false ? null : (){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext) =>
+                            InfoPageView(
+                                widget.ordemSelected,
+                                avaliacaoController.departamentoSelected!))
+                );
               },
               icon: Icon(Icons.info_outline)
           ),
@@ -109,7 +93,6 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                           onChanged:(value) async{
                             avaliacaoController.onChangeDepartamento(value);
                             avaliacaoController.addProdutoDepartamento();
-                            print(avaliacaoController.departamentoSelected!.produtos);
                             setState(() {
                               avaliacaoController.listWidget();
                             });
@@ -165,6 +148,7 @@ class _AvaliacaoPageViewState extends State<AvaliacaoPageView> {
                     IconButton(
                         onPressed: avaliacaoController.verificaProdutoDepartamento == false ? null :(){
                           avaliacaoController.addList();
+                          print(avaliacaoController.produtosDepartamento);
                           _cancelSearch();
                           setState(() {
 

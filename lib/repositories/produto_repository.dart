@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:microsistema/infra/database_infra.dart';
+import 'dart:convert';
 import 'package:microsistema/models/produtos.dart';
 
 class ProdutoRepository{
@@ -12,15 +16,28 @@ class ProdutoRepository{
     lista.forEach((element) {
       Produtos produtos = Produtos();
       produtos.id = element['PRODUTO'];
-      _listProd.where((ele) => ele.id == produtos.id).forEach((elemento) {
-        // produtos.nomeComercial = elemento.nomeComercial;
-        // produtos.nomeQuimico = elemento.nomeQuimico;
-        produtos.quantidade = element['QUANTIDADE'];
-        //print(produtos);
-      });
+      produtos.quantidade = element['QUANTIDADE'];
       listProd.add(produtos);
     });
     return listProd;
+  }
+
+  Future<bool> insertProdDep(Map<String,dynamic> modelo) async{
+    String produtoDepEncoded = jsonEncode({"1" : [modelo]});
+    var http = Dio();
+    try{
+      await http.post(
+          'http://mundolivre.dyndns.info:8083/api/v5/json/et2erp/querys/produto_departamento',
+          options: Options(headers:{
+            'tenant': 'integrador_41806514000116',
+            HttpHeaders.contentTypeHeader: "application/json",
+          }),
+          data: produtoDepEncoded
+      );
+      return true;
+    }catch(e){
+      return false;
+    }
   }
 
   Future<List<Produtos>> getAllProd() async{
@@ -33,12 +50,17 @@ class ProdutoRepository{
     });
     return _listProd;
   }
+
   Future<int> saveProduto(Map<String,dynamic> produto, String table) async {
     return await database.insertDataBinding(table, produto);
   }
 
-  Future<void> cleanTable(String table,int os, int departamento, int produto) async{
+  Future<void> cleanTableByProduto(String table,int os, int departamento, int produto) async{
     database.deleteData("delete from $table where OS = $os and DEPARTAMENTO = $departamento and PRODUTO = $produto;");
+  }
+
+  Future<void> cleanTable(String table,int os, int departamento) async{
+    database.deleteData("delete from $table where OS = $os and DEPARTAMENTO = $departamento;");
   }
 
 }

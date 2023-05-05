@@ -7,6 +7,10 @@ class Departamento {
   String? nome;
   List<Armadilha> armadilhas = [];
   List<Produtos> produtos = [];
+  String? pontosMelhoria;
+  String? relatorioMonit;
+  String? observacoes;
+  String? comentContra;
 
   Departamento({this.id, this.nome});
 

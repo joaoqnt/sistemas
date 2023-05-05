@@ -22,10 +22,6 @@ class AvaliacaoController{
   String statusSelected = "Todos";
   List<String> listStatus = ['A', 'B', 'C', 'D', 'K','P','R','X'];
   List<String> listStatusFilter = ['Todos','A', 'B', 'C', 'D', 'K','P','R','X'];
-  TextEditingController tecPontos = TextEditingController();
-  TextEditingController tecRelat = TextEditingController();
-  TextEditingController tecObserv = TextEditingController();
-  TextEditingController tecComent = TextEditingController();
   TextEditingController tecQuantidade = TextEditingController(text: '1');
   bool valido = false;
 
@@ -35,6 +31,11 @@ class AvaliacaoController{
     return departamentos;
   }
 
+  bool checkDep(){
+    bool valido;
+    departamentoSelected == null ? valido = false : valido = true;
+    return valido;
+  }
 
   void addProdutoDepartamento(){
     departamentoSelected!.produtos.forEach((element) {
@@ -64,6 +65,7 @@ class AvaliacaoController{
 
   addList(){
     produtoSelected!.quantidade = double.tryParse(tecQuantidade.text);
+    produtoSelected!.pendente = 'S';
     produtosDepartamento.add(produtoSelected!);
     produtos.remove(produtoSelected!);
     produtoSelected = null;
@@ -86,7 +88,7 @@ class AvaliacaoController{
   }
 
   Future deleteProd(int os, int departamento, int produto) async{
-    await produtoRepository.cleanTable('produtos_departamento', os, departamento, produto);
+    await produtoRepository.cleanTableByProduto('produtos_departamento', os, departamento, produto);
   }
 
   Future getAllProdByDep(int os, int dep) async{
@@ -103,19 +105,21 @@ class AvaliacaoController{
 
   Future modelProdDep(int os,int departamento,List<Produtos> listproduto) async{
     int index = 0;
+    produtoRepository.cleanTable("produtos_departamento", os, departamento);
     while(index < listproduto.length){
-      listproduto.forEach((element) {
-        deleteProd(os, departamento,element.id!);
+      listproduto.forEach((element) async{
         index++;
         Map<String,dynamic> modelo = {
           'ID':index,
           'OS':os,
           'DEPARTAMENTO':departamento,
           'PRODUTO':element.id,
-          'QUANTIDADE':element.quantidade
+          'QUANTIDADE':element.quantidade,
+          'PENDENTE': element.pendente
         };
-        print(modelo);
-        saveData(modelo, 'produtos_departamento');
+        // print(modelo);
+        await saveData(modelo, 'produtos_departamento');
+        await produtoRepository.insertProdDep(modelo);
       });
     }
   }
